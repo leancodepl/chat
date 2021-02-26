@@ -1,23 +1,28 @@
 <Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <OutputType>Library</OutputType>
     <Nullable>enable</Nullable>
+
+    <CoreLibVersion>5.0.1040</CoreLibVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LeanCode.Components" />
-    <PackageReference Include="LeanCode.Correlation" />
-    <PackageReference Include="LeanCode.CQRS" />
-    <PackageReference Include="LeanCode.CQRS.Cache" />
-    <PackageReference Include="LeanCode.CQRS.Execution" />
-    <PackageReference Include="LeanCode.CQRS.Security" />
-    <PackageReference Include="LeanCode.CQRS.Validation.Fluent" />
-    <PackageReference Include="LeanCode.DomainModels" />
-    <PackageReference Include="LeanCode.DomainModels.MassTransitRelay" />
-    <PackageReference Include="LeanCode.Firebase.FCM" />
-    <PackageReference Include="LeanCode.Firebase.Firestore" />
-    <PackageReference Include="LeanCode.IdentityProvider" />
-    <PackageReference Include="LeanCode.Time" />
-    <PackageReference Include="LeanCode.TimeProvider" />
+    <PackageReference Include="LeanCode.Components" Version="$(CoreLibVersion)" />
+    <PackageReference Include="LeanCode.Correlation" Version="$(CoreLibVersion)" />
+    <PackageReference Include="LeanCode.CQRS" Version="$(CoreLibVersion)" />
+    <PackageReference Include="LeanCode.CQRS.Cache" Version="$(CoreLibVersion)" />
+    <PackageReference Include="LeanCode.CQRS.Execution" Version="$(CoreLibVersion)" />
+    <PackageReference Include="LeanCode.CQRS.Security" Version="$(CoreLibVersion)" />
+    <PackageReference Include="LeanCode.CQRS.Validation.Fluent" Version="$(CoreLibVersion)" />
+    <PackageReference Include="LeanCode.DomainModels" Version="$(CoreLibVersion)" />
+    <PackageReference Include="LeanCode.DomainModels.MassTransitRelay" Version="$(CoreLibVersion)" />
+    <PackageReference Include="LeanCode.Firebase.FCM" Version="$(CoreLibVersion)" />
+    <PackageReference Include="LeanCode.Firebase.Firestore" Version="$(CoreLibVersion)" />
+    <PackageReference Include="LeanCode.IdentityProvider" Version="$(CoreLibVersion)" />
+    <PackageReference Include="LeanCode.Time" Version="$(CoreLibVersion)" />
+    <PackageReference Include="LeanCode.TimeProvider" Version="$(CoreLibVersion)" />
   </ItemGroup>
 
 </Project>
