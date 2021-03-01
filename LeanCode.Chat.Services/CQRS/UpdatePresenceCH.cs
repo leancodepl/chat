@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using LeanCode.Chat.Contracts;
 using LeanCode.Chat.Services.DataAccess;
@@ -5,6 +6,7 @@ using LeanCode.CQRS.Execution;
 
 namespace LeanCode.Chat.Services.CQRS
 {
+    [SuppressMessage("", "LNCD0003", Justification = "There is nothing to validate.")]
     public class UpdatePresenceCH : ICommandHandler<ChatContext, UpdatePresence>
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<UpdatePresenceCH>();

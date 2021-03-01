@@ -31,35 +31,19 @@ namespace LeanCode.Chat
             return new ChatContext(httpContext.User, httpContext.RequestAborted);
         }
 
-        private static ChatContext ForTests(Guid userId, string role)
-        {
-            var claims = new[]
-            {
-                new Claim(DefaultChatClaims.UserId, userId.ToString()),
-                new Claim(DefaultChatClaims.Role, role),
-            };
-
-            var user = new ClaimsPrincipal(new ClaimsIdentity(
-                claims: claims,
-                authenticationType: "internal",
-                nameType: DefaultChatClaims.UserId,
-                roleType: DefaultChatClaims.Role));
-
-            return new ChatContext(user, default);
-        }
-
         private Guid ParseUserClaim(string claimType)
         {
             if (user?.Identity?.IsAuthenticated ?? false)
             {
                 var str = user.FindFirstValue(claimType);
-                Guid.TryParse(str, out var res);
-                return res;
+
+                if (Guid.TryParse(str, out var res))
+                {
+                    return res;
+                }
             }
-            else
-            {
-                return Guid.Empty;
-            }
+
+            return Guid.Empty;
         }
     }
 }
