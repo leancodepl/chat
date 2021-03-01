@@ -25,4 +25,8 @@
     <PackageReference Include="LeanCode.TimeProvider" Version="$(CoreLibVersion)" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="LeanCode.CodeAnalysis" Version="$(CoreLibVersion)" PrivateAssets="all" />
+  </ItemGroup>
+
 </Project>
