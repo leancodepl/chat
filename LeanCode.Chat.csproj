@@ -3,10 +3,27 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <OutputType>Library</OutputType>
+    <Deterministic>true</Deterministic>
     <Nullable>enable</Nullable>
+    <DebugType>embedded</DebugType>
 
     <CoreLibVersion>5.0.1040</CoreLibVersion>
+
+    <Company>LeanCode</Company>
+    <RepositoryUrl>https://github.com/leancodepl/chat</RepositoryUrl>
+    <RepositoryCommit Condition="'$(GITHUB_SHA)' != ''">$(GITHUB_SHA)</RepositoryCommit>
+
+    <Version Condition="'$(GITHUB_RUN_NUMBER)' != ''">$(CoreLibVersion).$(GITHUB_RUN_NUMBER)</Version>
+    <Version Condition="'$(GITHUB_RUN_NUMBER)' == ''">$(CoreLibVersion)</Version>
+
+    <InformationalVersion Condition="'$(RepositoryCommit)' != ''">$(Version)+$(RepositoryCommit)</InformationalVersion>
+    <InformationalVersion Condition="'$(RepositoryCommit)' == ''">$(Version)+local</InformationalVersion>
   </PropertyGroup>
+
+  <Target Name="PrintVersion" BeforeTargets="Build">
+    <Message Importance="high" Text="             Version: $(Version)" />
+    <Message Importance="high" Text="InformationalVersion: $(InformationalVersion)" />
+  </Target>
 
   <ItemGroup>
     <PackageReference Include="LeanCode.Components" Version="$(CoreLibVersion)" />
