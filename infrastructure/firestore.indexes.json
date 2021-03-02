@@ -1,0 +1,53 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "messages",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "ConversationId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "DateSent",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "conversations",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "MemberIds",
+          "arrayConfig": "CONTAINS"
+        },
+        {
+          "fieldPath": "LastMessage.Exists",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "Timestamp",
+          "order": "ASCENDING"
+        }
+      ]
+    }
+  ],
+  "fieldOverrides": [
+    {
+      "collectionGroup": "messages",
+      "fieldPath": "Content",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "conversations",
+      "fieldPath": "LastMessage.Content",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "unread_conversations_counters",
+      "fieldPath": "Count",
+      "indexes": []
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /messages/{messageId} {
+      function inConversation() {
+        return request.auth.uid in
+            get(/databases/$(database)/documents/conversations/$(resource.data.ConversationId)).data.MemberIds;
+      }
+
+      allow read: inConversation();
+    }
+
+    match /conversations/{conversationId} {
+      allow read: if request.auth.uid in resource.data.MemberIds;
+    }
+
+    match /unread_conversations_counters/{userId} {
+      allow read: if request.auth.uid == userId
+    }
+
+    match /users_presence/{userId} {
+      allow read;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
