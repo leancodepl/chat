@@ -50,11 +50,11 @@ public class Startup : LeanStartup
 
     /// ...
 
-    app.Map("/chat", api =>
-            api
-                .UseRemoteCQRS(
-                    new TypesCatalog(typeof(CreateConversation)),
-                    ChatContext.FromHttp));
+        app.Map("/chat", api => api
+            // .UseAuthentication() if appropriate
+            .UseRemoteCQRS(
+                new TypesCatalog(typeof(CreateConversation)),
+                ChatContext.FromHttp));
     // ...
 }
 ```
