@@ -5,10 +5,10 @@ service cloud.firestore {
     match /messages/{messageId} {
       function inConversation() {
         return request.auth.uid in
-            get(/databases/$(database)/documents/conversations/$(resource.data.ConversationId)).data.MemberIds;
+          get(/databases/$(database)/documents/conversations/$(resource.data.ConversationId)).data.MemberIds;
       }
 
-      allow read: inConversation();
+      allow read: if inConversation();
     }
 
     match /conversations/{conversationId} {
