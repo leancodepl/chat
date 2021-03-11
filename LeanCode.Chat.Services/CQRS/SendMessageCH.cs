@@ -31,6 +31,21 @@ namespace LeanCode.Chat.Services.CQRS
                 .NotEmpty()
                 .WithCode(Errors.NoContent)
                 .WithMessage("No content");
+
+            RuleForAsync(cmd => cmd, ValidateCommandAsync)
+                .Equal(true)
+                .WithCode(Errors.CannotSendMessage)
+                .WithMessage("Cannot send message");
+        }
+
+        private static Task<bool> ValidateCommandAsync(
+            IValidationContext ctx,
+            SendMessage cmd)
+        {
+            var chatContext = ctx.AppContext<ChatContext>();
+            var validator = ctx.GetService<IChatValidator>();
+
+            return validator.CanSendMessageAsync(chatContext.UserId, cmd, chatContext.CancellationToken);
         }
     }
 

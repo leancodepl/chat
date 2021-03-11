@@ -17,6 +17,7 @@ namespace LeanCode.Chat.Contracts
             public const int UserNotInConversation = 2;
             public const int NoContent = 3;
             public const int NoMessageId = 4;
+            public const int CannotSendMessage = 5;
         }
     }
 }
