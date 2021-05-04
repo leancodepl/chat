@@ -14,15 +14,18 @@ namespace LeanCode.Chat.Services.Processes
     public class SendPNOnNewMessage : IConsumer<MessageSent>
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<SendPNOnNewMessage>();
+        private readonly ChatConfiguration configuration;
         private readonly FCMClient fcm;
         private readonly IPushNotificationTokenStore pushNotificationTokenStore;
         private readonly IChatPushNotificationsLocalizer pushNotificationsLocalizer;
 
         public SendPNOnNewMessage(
+            ChatConfiguration configuration,
             FCMClient fcm,
             IPushNotificationTokenStore pushNotificationTokenStore,
             IChatPushNotificationsLocalizer pushNotificationsLocalizer)
         {
+            this.configuration = configuration;
             this.fcm = fcm;
             this.pushNotificationTokenStore = pushNotificationTokenStore;
             this.pushNotificationsLocalizer = pushNotificationsLocalizer;
@@ -30,6 +33,14 @@ namespace LeanCode.Chat.Services.Processes
 
         public async Task Consume(ConsumeContext<MessageSent> context)
         {
+            if (!configuration.SendNotificationOnNewMessage)
+            {
+                logger.Information(
+                    "Sending default notification for new message is disabled, skipping sending PN for message {MessageId}",
+                    context.Message.MessageId);
+                return;
+            }
+
             var message = context.Message;
 
             var conversationId = message.ConversationId;
