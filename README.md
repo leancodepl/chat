@@ -59,6 +59,18 @@ public class Startup : LeanStartup
 }
 ```
 
+### Configuration
+
+`ChatConfiguration` should be registered in your `AppModule` at least with default values:
+
+```csharp
+protected override void Load(ContainerBuilder builder)
+{
+    // ...
+    builder.RegisterInstance(new ChatConfiguration()).AsSelf().SingleInstance();
+}
+```
+
 ### Authorization
 
 Access to the chat is protected by the `chat_user` permission. Add it to your app roles to allow specified groups of users to use the chat.
@@ -121,3 +133,5 @@ public class ChatAuctions : IRemoteQuery<List<ChatAuctionDTO>>
 ### Push notifications
 
 LeanCode.Chat is set up to send push notifications to users assuming the project has FCM configured with the help of the `LeanCode.Chat.FCM` package. Push notifications can be localized on a per-user basis which means the core application project should implement `IChatPushNotificationsLocalizer`. The interface also provides flexibility of setting the title of the notification e.g. based on the conversation metadata.
+
+You can opt out from sending default notification by setting `SendNotificationOnNewMessage` property in `ChatConfiguration` to `false`.
