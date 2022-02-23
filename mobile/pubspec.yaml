@@ -1,0 +1,46 @@
+name: leancode_chat_client
+version: 1.0.0
+
+publish_to: "none"
+
+environment:
+  sdk: ">=2.15.0 <3.0.0"
+  flutter: ">=2.8.0 <3.0.0"
+
+dependencies:
+  clock: ^1.1.0
+  cloud_firestore: ^3.1.5
+  cqrs: ^6.1.0
+  equatable: ^2.0.3
+  firebase_auth: ^3.1.3
+  firebase_core: ^1.7.0
+  flutter:
+    sdk: flutter
+  flutter_bloc: ^8.0.0-dev.1
+  flutter_hooks: ^0.18.0
+  freezed_annotation: ^1.0.0
+  http: ^0.13.4
+  json_annotation: ^4.4.0
+  logging: ^1.0.2
+  rxdart: ^0.27.2
+
+dev_dependencies:
+  bloc_test: ^9.0.0-dev.2
+  build_runner: ^2.1.4
+  contracts_generator: ^0.4.2
+  flutter_test:
+    sdk: flutter
+  freezed: ^1.0.0
+  json_serializable: ^6.1.3
+  leancode_lint: ^1.0.2
+  mocktail: ^0.2.0
+  test: ^1.17.10
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: pl.leancode.leancode_chat_client
+        pluginClass: LeancodeChatClientPlugin
+      ios:
+        pluginClass: LeancodeChatClientPlugin
