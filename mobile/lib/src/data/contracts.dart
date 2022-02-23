@@ -1,6 +1,3 @@
-// !!!!!!!! HANDWRITTEN !!!!!!!!!!!!
-// TODO: move to contracts_generator once backend uses the newest version of LeanCode.Chat
-
 import 'package:cqrs/contracts.dart';
 import 'package:json_annotation/json_annotation.dart';
 
