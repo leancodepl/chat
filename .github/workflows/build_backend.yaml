@@ -1,4 +1,4 @@
-name: Chat Build and Pack
+name: Backend chat
 
 on:
   push:
