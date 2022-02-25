@@ -1,19 +1,16 @@
 using System;
 using System.Security.Claims;
 using System.Threading;
-using LeanCode.Correlation;
 using LeanCode.CQRS.Security;
 using LeanCode.Pipelines;
 using Microsoft.AspNetCore.Http;
 
 namespace LeanCode.Chat
 {
-    public class ChatContext : ISecurityContext, ICorrelationContext
+    public class ChatContext : ISecurityContext
     {
         IPipelineScope IPipelineContext.Scope { get; set; } = null!;
         ClaimsPrincipal ISecurityContext.User => user;
-        Guid ICorrelationContext.CorrelationId { get; set; }
-        Guid ICorrelationContext.ExecutionId { get; set; }
         public CancellationToken CancellationToken { get; }
         public Guid UserId { get; }
 

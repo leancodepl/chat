@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using LeanCode.Chat.Services.DataAccess.Entities;
 using LeanCode.DomainModels.Model;
-using LeanCode.IdentityProvider;
 using LeanCode.Time;
 
 namespace LeanCode.Chat.Services.DataAccess.Events
@@ -24,7 +23,7 @@ namespace LeanCode.Chat.Services.DataAccess.Events
 
         public MessageSent(Message m, Conversation c)
         {
-            Id = Identity.NewId();
+            Id = Guid.NewGuid();
             DateOccurred = TimeProvider.Now;
 
             MessageId = m.Id;
