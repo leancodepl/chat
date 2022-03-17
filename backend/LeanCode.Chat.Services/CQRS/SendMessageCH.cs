@@ -62,24 +62,37 @@ namespace LeanCode.Chat.Services.CQRS
         public async Task ExecuteAsync(ChatContext context, SendMessage command)
         {
             var userId = context.UserId;
-            var conv = await storage.GetConversationAsync(command.ConversationId);
+            var message = Message.Create(command.MessageId, command.ConversationId, userId, command.Content);
 
-            if (conv is null)
+            var conversation = await storage.AddMessageAsync(message, conv =>
             {
-                throw new InvalidOperationException("Conversation does not exist");
-            }
+                if (conv is null)
+                {
+                    throw new InvalidOperationException("Conversation does not exist.");
+                }
 
-            if (!conv.InConversation(userId))
+                if (!conv.InConversation(userId))
+                {
+                    throw new InvalidOperationException("User is not in conversation.");
+                }
+
+                return conv.Members[userId].ForSeenMessage(message);
+            });
+
+            if (conversation is not null)
             {
-                throw new InvalidOperationException("User is not in conversation");
+                message.NotifySent(conversation);
+
+                logger.Information(
+                    "User {UserId} sent message to conversation {ConversationId}",
+                    userId, conversation.Id);
             }
-
-            var message = Message.Create(command.MessageId, conv, userId, command.Content);
-            var updatedMember = conv.Members[userId].ForSeenMessage(message);
-
-            await storage.AddMessageAsync(message, updatedMember);
-
-            logger.Information("User {UserId} sent message to conversation {ConversationId}", userId, conv.Id);
+            else
+            {
+                logger.Warning(
+                    "Cannot send the message {MessageId} to conversation {ConversationId} because the conversation does not exist",
+                    command.MessageId, command.ConversationId);
+            }
         }
     }
 }

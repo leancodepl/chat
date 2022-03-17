@@ -45,31 +45,40 @@ namespace LeanCode.Chat.Services.CQRS
                 return;
             }
 
-            var conversation = await storage.GetConversationAsync(message.ConversationId);
-            if (conversation is null)
-            {
-                logger.Information(
-                    "User {UserId} attempted to mark message {MessageId} for a non-existing conversation {ConversationId}, ignoring",
-                    userId,
-                    command.MessageId,
-                    message.ConversationId);
-                return;
-            }
+            await storage.UpdateMemberLastSeenMessageAsync(
+                userId,
+                message,
+                conversation =>
+                {
+                    if (conversation is null)
+                    {
+                        logger.Information(
+                            "User {UserId} attempted to mark message {MessageId} for a non-existing conversation {ConversationId}, ignoring",
+                            userId,
+                            command.MessageId,
+                            message.ConversationId);
+                        return null;
+                    }
 
-            if (!conversation.InConversation(userId))
-            {
-                logger.Information(
-                    "User {UserId} attempted to access messages from conversation {ConversationId} they do not belong to, ignoring",
-                    userId,
-                    conversation.Id);
-                return;
-            }
+                    if (!conversation.InConversation(userId))
+                    {
+                        logger.Information(
+                            "User {UserId} attempted to access messages from conversation {ConversationId} they do not belong to, ignoring",
+                            userId,
+                            conversation.Id);
+                        return null;
+                    }
 
-            var member = conversation.Members[userId];
-            if (member.LastSeenMessageDate < message.DateSent)
-            {
-                await storage.UpdateMemberLastSeenMessageAsync(conversation.Id, userId, member, message);
-            }
+                    var member = conversation.Members[userId];
+                    if (member.LastSeenMessageDate < message.DateSent)
+                    {
+                        return member;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                });
         }
     }
 }

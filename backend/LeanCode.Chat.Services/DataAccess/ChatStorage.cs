@@ -57,19 +57,23 @@ namespace LeanCode.Chat.Services.DataAccess
             return doc.CreateAsync(ConversationsSerializer.SerializeNewConversation(c));
         }
 
-        public virtual async Task AddMessageAsync(Message message, ConversationMember updatedMember)
+        public virtual async Task<Conversation?> AddMessageAsync(
+            Message message,
+            Func<Conversation, ConversationMember> apply)
         {
             var msgDoc = db.Database.Message(message.Id);
             var convDoc = db.Database.Conversation(message.ConversationId);
 
-            await db.Database.RunTransactionAsync(async transaction =>
+            return await db.Database.RunTransactionAsync(async transaction =>
             {
                 var convSnapshot = await transaction.GetSnapshotAsync(convDoc);
                 var conversation = ConversationsSerializer.DeserializeConversation(convSnapshot);
                 if (conversation is null)
                 {
-                    return false;
+                    return null;
                 }
+
+                var updatedMember = apply(conversation);
 
                 transaction.Create(msgDoc, MessagesSerializer.SerializeMessage(message));
                 transaction.Set(convDoc, ConversationsSerializer.SerializeConversationUpdateForNewMessage(message, updatedMember), SetOptions.MergeAll);
@@ -83,25 +87,30 @@ namespace LeanCode.Chat.Services.DataAccess
                         SetOptions.MergeAll);
                 }
 
-                return true;
+                return conversation;
             });
         }
 
-        public virtual async Task UpdateMemberLastSeenMessageAsync(Guid conversationId, Guid userId, ConversationMember member, Message message)
+        public virtual async Task UpdateMemberLastSeenMessageAsync(
+            Guid userId,
+            Message message,
+            Func<Conversation?, ConversationMember?> apply)
         {
-            var newMember = member.ForSeenMessage(message);
-            var doc = db.Database.Conversation(conversationId);
+            var doc = db.Database.Conversation(message.ConversationId);
 
             await db.Database.RunTransactionAsync(async transaction =>
             {
                 var convSnapshot = await transaction.GetSnapshotAsync(doc);
                 var conversation = ConversationsSerializer.DeserializeConversation(convSnapshot);
-                if (conversation is null)
+                var member = apply(conversation);
+                if (member is null)
                 {
                     return false;
                 }
 
-                if (ConversationCountersService.ShouldDecrementCounterOnMessageSeen(conversation, userId, message.Id))
+                var newMember = member.ForSeenMessage(message);
+
+                if (ConversationCountersService.ShouldDecrementCounterOnMessageSeen(conversation!, userId, message.Id))
                 {
                     transaction.Set(
                         db.Database.UnreadConversationCounter(userId),
