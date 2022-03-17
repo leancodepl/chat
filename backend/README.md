@@ -38,12 +38,12 @@ public class Startup : LeanStartup
         new CQRSModule()
             .WithCustomPipelines<CoreContext>(
                 new TypesCatalog(typeof(CoreContext)),
-                c => c.Trace().Secure().Validate().StoreAndPublishEvents(),
-                q => q.Trace().Secure().Cache())
+                c => c.Secure().Validate().StoreAndPublishEvents(),
+                q => q.Secure().Cache())
             .WithCustomPipelines<ChatContext>(
                 new TypesCatalog(typeof(ChatContext)),
-                c => c.Trace().Secure().Validate().StoreAndPublishEvents(),
-                q => q.Trace().Secure().Cache()),
+                c => c.Secure().Validate().StoreAndPublishEvents(),
+                q => q.Secure().Cache()),
         /// ...
         new ChatModule(),
     }
@@ -52,7 +52,6 @@ public class Startup : LeanStartup
 
         app.Map("/chat", api => api
             // .UseAuthentication() if appropriate
-            .UseUserIdLogsCorrelation(DefaultChatClaims.UserId)
             .UseRemoteCQRS(
                 new TypesCatalog(typeof(CreateConversation)),
                 ChatContext.FromHttp));
