@@ -27,18 +27,24 @@ namespace LeanCode.Chat.Services.DataAccess.Entities
             Content = content;
         }
 
-        public static Message Create(Guid guid, Conversation conversation, Guid senderId, string content)
+        public static Message Create(Guid guid, Guid conversationId, Guid senderId, string content)
         {
-            var message = new Message(
+            return new(
                 guid,
-                conversation.Id,
+                conversationId,
                 senderId,
                 TimeProvider.Now,
                 content);
+        }
 
-            DomainEvents.Raise(new MessageSent(message, conversation));
+        public void NotifySent(Conversation conversation)
+        {
+            if (conversation.Id != ConversationId)
+            {
+                throw new ArgumentException("The message belongs to different conversation.");
+            }
 
-            return message;
+            DomainEvents.Raise(new MessageSent(this, conversation));
         }
     }
 }
