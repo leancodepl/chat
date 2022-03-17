@@ -1,13 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <OutputType>Library</OutputType>
     <Deterministic>true</Deterministic>
     <Nullable>enable</Nullable>
     <DebugType>embedded</DebugType>
 
-    <CoreLibVersion>6.0.1558</CoreLibVersion>
+    <CoreLibVersion>5.0.1040</CoreLibVersion>
 
     <Company>LeanCode</Company>
     <RepositoryUrl>https://github.com/leancodepl/chat</RepositoryUrl>
