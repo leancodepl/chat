@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - v*
     paths:
       - 'backend/**'
   pull_request:
@@ -29,10 +30,10 @@ jobs:
       - name: Build
         run: dotnet build --no-restore -c Release
       - name: Pack
-        if: github.ref == 'refs/heads/master'
+        if: ${{ github.ref == 'refs/heads/master' || contains(github.ref, 'refs/heads/v') }}
         run: dotnet pack --no-build -c Release
       - name: Push to Feedz
-        if: github.ref == 'refs/heads/master'
+        if: ${{ github.ref == 'refs/heads/master' || contains(github.ref, 'refs/heads/v') }}
         run: find bin/Release -maxdepth 1 -name '*.nupkg' -exec dotnet nuget push -k "$FEEDZ_API_KEY" -s 'https://f.feedz.io/leancode/corelibrary/nuget/index.json' --no-symbols '{}' ';'
         env:
           FEEDZ_API_KEY: ${{ secrets.FEEDZ_API_KEY }}
