@@ -38,12 +38,12 @@ public class Startup : LeanStartup
         new CQRSModule()
             .WithCustomPipelines<CoreContext>(
                 new TypesCatalog(typeof(CoreContext)),
-                c => c.Secure().Validate().StoreAndPublishEvents(),
-                q => q.Secure().Cache())
+                c => c.Correlate().Secure().Validate().StoreAndPublishEvents(),
+                q => q.Correlate().Secure().Cache())
             .WithCustomPipelines<ChatContext>(
                 new TypesCatalog(typeof(ChatContext)),
-                c => c.Secure().Validate().StoreAndPublishEvents(),
-                q => q.Secure().Cache()),
+                c => c.Correlate().Secure().Validate().StoreAndPublishEvents(),
+                q => q.Correlate().Secure().Cache()),
         /// ...
         new ChatModule(),
     }
