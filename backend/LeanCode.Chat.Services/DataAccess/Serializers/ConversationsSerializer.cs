@@ -30,10 +30,7 @@ namespace LeanCode.Chat.Services.DataAccess.Serializers
         {
             return new
             {
-                LastDeliveredMessageId = member.LastDeliveredMessageId.ToString(),
                 LastSeenMessageId = member.LastSeenMessageId.ToString(),
-
-                member.LastDeliveredMessageDate,
                 member.LastSeenMessageDate,
 
                 // To enable queries checking all members ids
@@ -110,14 +107,10 @@ namespace LeanCode.Chat.Services.DataAccess.Serializers
         public static ConversationMember DeserializeConversationMember(object data)
         {
             var map = data as Dictionary<string, object>;
-            var lastDeliveredId = Guid.Parse((map?[nameof(ConversationMember.LastDeliveredMessageId)] as string)!);
-            var lastDeliveredDate = ((Timestamp)map?[nameof(ConversationMember.LastDeliveredMessageDate)]!).ToDateTime();
             var lastSeenId = Guid.Parse((map?[nameof(ConversationMember.LastSeenMessageId)] as string)!);
             var lastSeenDate = ((Timestamp)map?[nameof(ConversationMember.LastSeenMessageDate)]!).ToDateTime();
 
             return new ConversationMember(
-                lastDeliveredId,
-                lastDeliveredDate,
                 lastSeenId,
                 lastSeenDate);
         }

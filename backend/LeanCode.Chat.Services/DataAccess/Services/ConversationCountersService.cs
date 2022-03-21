@@ -7,12 +7,9 @@ namespace LeanCode.Chat.Services.DataAccess.Services
 {
     public class ConversationCountersService
     {
-        public static List<Guid> GetMemberIdsForIncrementOnNewMessage(Conversation conversation, Message newMessage)
+        public static IEnumerable<Guid> GetMemberIdsForIncrementOnNewMessage(Conversation conversation)
         {
-            return conversation.Members
-                .Where(m => !conversation.HasUnreadMessages(m.Key) && m.Key != newMessage.SenderId)
-                .Select(m => m.Key)
-                .ToList();
+            return conversation.Members.Keys.Where(m => !conversation.HasUnreadMessages(m));
         }
 
         public static bool ShouldDecrementCounterOnMessageSeen(Conversation conversation, Guid userId, Guid seenMessageId)

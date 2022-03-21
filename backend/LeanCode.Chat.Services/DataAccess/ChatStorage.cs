@@ -78,7 +78,7 @@ namespace LeanCode.Chat.Services.DataAccess
                 transaction.Create(msgDoc, MessagesSerializer.SerializeMessage(message));
                 transaction.Set(convDoc, ConversationsSerializer.SerializeConversationUpdateForNewMessage(message, updatedMember), SetOptions.MergeAll);
 
-                var membersIdsToUpdate = ConversationCountersService.GetMemberIdsForIncrementOnNewMessage(conversation, message);
+                var membersIdsToUpdate = ConversationCountersService.GetMemberIdsForIncrementOnNewMessage(conversation);
                 foreach (var memberId in membersIdsToUpdate)
                 {
                     transaction.Set(
