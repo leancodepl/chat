@@ -78,12 +78,21 @@ namespace LeanCode.Chat.Services.DataAccess
                 transaction.Create(msgDoc, MessagesSerializer.SerializeMessage(message));
                 transaction.Set(convDoc, ConversationsSerializer.SerializeConversationUpdateForNewMessage(message, updatedMember), SetOptions.MergeAll);
 
-                var membersIdsToUpdate = ConversationCountersService.GetMemberIdsForIncrementOnNewMessage(conversation);
-                foreach (var memberId in membersIdsToUpdate)
+                var membersIdsToIncrement = ConversationCountersService.GetMemberIdsForIncrementOnNewMessage(conversation, message);
+                foreach (var memberId in membersIdsToIncrement)
                 {
                     transaction.Set(
                         db.Database.UnreadConversationCounter(memberId),
                         ConversationCountersSerializer.SerializeConversationCounterIncrement(),
+                        SetOptions.MergeAll);
+                }
+
+                var membersIdsToDecrement = ConversationCountersService.GetMemberIdsForDecrementOnNewMessage(conversation, message);
+                foreach (var memberId in membersIdsToDecrement)
+                {
+                    transaction.Set(
+                        db.Database.UnreadConversationCounter(memberId),
+                        ConversationCountersSerializer.SerializeConversationCounterDecrement(),
                         SetOptions.MergeAll);
                 }
 
