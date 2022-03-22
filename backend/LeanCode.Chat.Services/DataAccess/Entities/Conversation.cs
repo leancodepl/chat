@@ -17,6 +17,8 @@ namespace LeanCode.Chat.Services.DataAccess.Entities
         public IReadOnlyDictionary<Guid, ConversationMember> Members => members;
         public Message? LastMessage { get; private set; }
 
+        public long NextMessageCounter { get; private set; }
+
         public bool InConversation(Guid userId) => Members.ContainsKey(userId);
 
         public bool TryGetMember(Guid userId, [NotNullWhen(true)] out ConversationMember? member)
@@ -45,12 +47,14 @@ namespace LeanCode.Chat.Services.DataAccess.Entities
             Guid id,
             Dictionary<Guid, ConversationMember> members,
             Message? lastMessage,
-            Dictionary<string, string> metadata)
+            Dictionary<string, string> metadata,
+            long nextMessageCounter)
         {
             Id = id;
             this.members = members;
             this.metadata = metadata;
             LastMessage = lastMessage;
+            NextMessageCounter = nextMessageCounter;
         }
 
         public static Conversation Create(Guid id, IEnumerable<Guid> members, Dictionary<string, string>? metadata = null)
@@ -66,6 +70,11 @@ namespace LeanCode.Chat.Services.DataAccess.Entities
             DomainEvents.Raise(new ConversationCreated(conversation));
 
             return conversation;
+        }
+
+        public Message WriteMessage(Guid guid, Guid senderId, string content)
+        {
+            return Message.Create(guid, Id, senderId,  NextMessageCounter, content);
         }
     }
 }

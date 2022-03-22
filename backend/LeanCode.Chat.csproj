@@ -35,8 +35,9 @@
     <PackageReference Include="LeanCode.DomainModels" Version="$(CoreLibVersion)" />
     <PackageReference Include="LeanCode.DomainModels.MassTransitRelay" Version="$(CoreLibVersion)" />
     <PackageReference Include="LeanCode.Firebase.FCM" Version="$(CoreLibVersion)" />
-    <PackageReference Include="LeanCode.Firebase.Firestore" Version="$(CoreLibVersion)" />
     <PackageReference Include="LeanCode.TimeProvider" Version="$(CoreLibVersion)" />
+
+    <PackageReference Include="LeanCode.Firebase.Firestore" Version="$(CoreLibVersion)" />
   </ItemGroup>
 
   <ItemGroup>

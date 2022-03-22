@@ -13,6 +13,7 @@ namespace LeanCode.Chat.Services.DataAccess.Serializers
             {
                 SenderId = m.SenderId.ToString(),
                 ConversationId = m.ConversationId.ToString(),
+                m.MessageCounter,
 
                 m.DateSent,
                 m.Content,
@@ -31,10 +32,15 @@ namespace LeanCode.Chat.Services.DataAccess.Serializers
             var senderId = Guid.Parse(doc.GetValue<string>(nameof(Message.SenderId)));
             var dateSent = doc.GetValue<DateTime>(nameof(Message.DateSent));
             var content = doc.GetValue<string>(nameof(Message.Content));
+            doc.TryGetValue<long?>(nameof(Message.MessageCounter), out var msgCounter);
 
             return new Message(
-                id, conversationId, senderId,
-                dateSent, content);
+                id,
+                conversationId,
+                senderId,
+                dateSent,
+                msgCounter ?? -1,
+                content);
         }
 
         public static Message? DeserializeMessage(Dictionary<string, object> map)
@@ -44,10 +50,28 @@ namespace LeanCode.Chat.Services.DataAccess.Serializers
             var senderId = Guid.Parse((map?[nameof(Message.SenderId)] as string)!);
             var dateSent = ((Timestamp)map?[nameof(Message.DateSent)]!).ToDateTime();
             var content = (map?[nameof(Message.Content)] as string)!;
+            var msgCounter = GetMessageCounter(map);
 
             return new Message(
-                id, conversationId, senderId,
-                dateSent, content);
+                id,
+                conversationId,
+                senderId,
+                dateSent,
+                msgCounter,
+                content);
+        }
+
+        private static long GetMessageCounter(Dictionary<string, object>? map)
+        {
+            if (map is not null)
+            {
+                map.TryGetValue(nameof(Message.MessageCounter), out var lastSeenMessageCounter);
+                return lastSeenMessageCounter is long v ? v : -1;
+            }
+            else
+            {
+                return -1;
+            }
         }
     }
 }

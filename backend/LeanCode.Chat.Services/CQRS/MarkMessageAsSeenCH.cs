@@ -24,9 +24,9 @@ namespace LeanCode.Chat.Services.CQRS
     public class MarkMessageAsSeenCH : ICommandHandler<ChatContext, MarkMessageAsSeen>
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<MarkMessageAsSeenCH>();
-        private readonly ChatStorage storage;
+        private readonly ChatService storage;
 
-        public MarkMessageAsSeenCH(ChatStorage storage)
+        public MarkMessageAsSeenCH(ChatService storage)
         {
             this.storage = storage;
         }
@@ -48,35 +48,20 @@ namespace LeanCode.Chat.Services.CQRS
             await storage.UpdateMemberLastSeenMessageAsync(
                 userId,
                 message,
-                conversation =>
+                (conv, msg) =>
                 {
-                    if (conversation is null)
-                    {
-                        logger.Information(
-                            "User {UserId} attempted to mark message {MessageId} for a non-existing conversation {ConversationId}, ignoring",
-                            userId,
-                            command.MessageId,
-                            message.ConversationId);
-                        return null;
-                    }
-
-                    if (!conversation.InConversation(userId))
+                    if (!conv.InConversation(userId))
                     {
                         logger.Information(
                             "User {UserId} attempted to access messages from conversation {ConversationId} they do not belong to, ignoring",
                             userId,
-                            conversation.Id);
-                        return null;
-                    }
-
-                    var member = conversation.Members[userId];
-                    if (member.LastSeenMessageDate < message.DateSent)
-                    {
-                        return member;
+                            conv.Id);
+                        return false;
                     }
                     else
                     {
-                        return null;
+                        var member = conv.Members[userId];
+                        return member.LastSeenMessageCounter < message.MessageCounter;
                     }
                 });
         }
