@@ -8,7 +8,7 @@ namespace LeanCode.Chat
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<ChatStorage>()
+            builder.RegisterType<ChatService>()
                 .AsSelf();
         }
     }

@@ -11,29 +11,36 @@ namespace LeanCode.Chat.Services.DataAccess.Entities
         public Guid ConversationId { get; private set; }
         public Guid SenderId { get; private set; }
         public DateTime DateSent { get; private set; }
+        public long MessageCounter { get; private set; }
         public string Content { get; private set; } = null!;
 
         private Message() { }
 
         // For firestore & tests
         internal Message(
-            Guid id, Guid conversationId, Guid senderId,
-            DateTime dateSent, string content)
+            Guid id,
+            Guid conversationId,
+            Guid senderId,
+            DateTime dateSent,
+            long messageCounter,
+            string content)
         {
             Id = id;
             ConversationId = conversationId;
             SenderId = senderId;
             DateSent = dateSent;
+            MessageCounter = messageCounter;
             Content = content;
         }
 
-        public static Message Create(Guid guid, Guid conversationId, Guid senderId, string content)
+        internal static Message Create(Guid guid, Guid conversationId, Guid senderId, long nextCounter, string content)
         {
             return new(
                 guid,
                 conversationId,
                 senderId,
                 TimeProvider.Now,
+                nextCounter,
                 content);
         }
 

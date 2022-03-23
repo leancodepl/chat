@@ -10,9 +10,9 @@ namespace LeanCode.Chat.Services.CQRS
     public class UpdatePresenceCH : ICommandHandler<ChatContext, UpdatePresence>
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<UpdatePresenceCH>();
-        private readonly ChatStorage storage;
+        private readonly ChatService storage;
 
-        public UpdatePresenceCH(ChatStorage storage)
+        public UpdatePresenceCH(ChatService storage)
         {
             this.storage = storage;
         }

@@ -27,7 +27,7 @@ namespace LeanCode.Chat.Services.CQRS.Validation
             Guid conversationId)
         {
             var userId = ctx.AppContext<ChatContext>().UserId;
-            var conv = await ctx.GetService<ChatStorage>()
+            var conv = await ctx.GetService<ChatService>()
                 .GetConversationAsync(conversationId);
 
             return (
