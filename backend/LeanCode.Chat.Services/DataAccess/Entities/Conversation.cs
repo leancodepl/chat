@@ -9,6 +9,8 @@ namespace LeanCode.Chat.Services.DataAccess.Entities
 {
     public class Conversation
     {
+        public const int InitialCounterValue = 0;
+
         private Dictionary<Guid, ConversationMember> members;
         private Dictionary<string, string> metadata;
 

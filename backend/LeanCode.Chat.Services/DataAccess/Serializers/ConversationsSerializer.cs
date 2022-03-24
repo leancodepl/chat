@@ -106,7 +106,7 @@ namespace LeanCode.Chat.Services.DataAccess.Serializers
                 members,
                 lastMessage,
                 metadata,
-                nextMessageCounter ?? 0);
+                nextMessageCounter ?? Conversation.InitialCounterValue);
         }
 
         public static ConversationMember DeserializeConversationMember(object data)
@@ -124,11 +124,11 @@ namespace LeanCode.Chat.Services.DataAccess.Serializers
             if (map is not null)
             {
                 map.TryGetValue(nameof(ConversationMember.LastSeenMessageCounter), out var lastSeenMessageCounter);
-                return lastSeenMessageCounter is long v ? v : -1;
+                return lastSeenMessageCounter is long v ? v : Message.UnavailableCounterValue;
             }
             else
             {
-                return -1;
+                return Message.UnavailableCounterValue;
             }
         }
     }

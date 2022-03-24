@@ -27,7 +27,7 @@ namespace LeanCode.Chat.Services.DataAccess.Entities
         public static ConversationMember Empty()
         {
             var now = TimeProvider.Now;
-            return new ConversationMember(Guid.Empty, now, -1);
+            return new ConversationMember(Guid.Empty, now, Message.UnavailableCounterValue);
         }
     }
 }

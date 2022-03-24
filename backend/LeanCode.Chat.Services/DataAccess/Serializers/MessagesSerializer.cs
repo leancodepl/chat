@@ -39,7 +39,7 @@ namespace LeanCode.Chat.Services.DataAccess.Serializers
                 conversationId,
                 senderId,
                 dateSent,
-                msgCounter ?? -1,
+                msgCounter ?? Message.UnavailableCounterValue,
                 content);
         }
 
@@ -66,11 +66,11 @@ namespace LeanCode.Chat.Services.DataAccess.Serializers
             if (map is not null)
             {
                 map.TryGetValue(nameof(Message.MessageCounter), out var lastSeenMessageCounter);
-                return lastSeenMessageCounter is long v ? v : -1;
+                return lastSeenMessageCounter is long v ? v : Message.UnavailableCounterValue;
             }
             else
             {
-                return -1;
+                return Message.UnavailableCounterValue;
             }
         }
     }
