@@ -7,6 +7,8 @@ namespace LeanCode.Chat.Services.DataAccess.Entities
 {
     public class Message
     {
+        public const int UnavailableCounterValue = -1;
+
         public Guid Id { get; private set; }
         public Guid ConversationId { get; private set; }
         public Guid SenderId { get; private set; }
