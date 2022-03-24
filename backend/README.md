@@ -95,7 +95,7 @@ public interface IChatValidator
 }
 ```
 
-Injecting `ChatStorage` might be useful for querying the underlying chat database.
+Injecting `ChatService` might be useful for querying the underlying chat database.
 
 ### Custom data
 

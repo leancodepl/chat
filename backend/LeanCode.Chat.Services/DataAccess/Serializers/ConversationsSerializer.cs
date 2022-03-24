@@ -13,6 +13,7 @@ namespace LeanCode.Chat.Services.DataAccess.Serializers
             return new
             {
                 c.Metadata,
+                c.NextMessageCounter,
                 Members = c.Members.ToDictionary(
                     pair => pair.Key.ToString(),
                     pair => SerializeConversationMember(pair.Value)),
@@ -30,11 +31,9 @@ namespace LeanCode.Chat.Services.DataAccess.Serializers
         {
             return new
             {
-                LastDeliveredMessageId = member.LastDeliveredMessageId.ToString(),
                 LastSeenMessageId = member.LastSeenMessageId.ToString(),
-
-                member.LastDeliveredMessageDate,
                 member.LastSeenMessageDate,
+                member.LastSeenMessageCounter,
 
                 // To enable queries checking all members ids
                 Exists = true,
@@ -73,6 +72,7 @@ namespace LeanCode.Chat.Services.DataAccess.Serializers
                     [message.SenderId.ToString()] = SerializeConversationMember(updatedSender),
                 },
                 Timestamp = FieldValue.ServerTimestamp,
+                NextMessageCounter = FieldValue.Increment(1),
             };
         }
 
@@ -93,6 +93,7 @@ namespace LeanCode.Chat.Services.DataAccess.Serializers
             var metadata = doc.GetValue<Dictionary<string, string>>(nameof(Conversation.Metadata));
 
             doc.TryGetValue<Dictionary<string, object>>(nameof(Conversation.LastMessage), out var lastMessageRaw);
+            doc.TryGetValue<long?>(nameof(Conversation.NextMessageCounter), out var nextMessageCounter);
 
             Message? lastMessage = null;
             if (lastMessageRaw["Exists"] as bool? == true)
@@ -104,22 +105,31 @@ namespace LeanCode.Chat.Services.DataAccess.Serializers
                 id,
                 members,
                 lastMessage,
-                metadata);
+                metadata,
+                nextMessageCounter ?? Conversation.InitialCounterValue);
         }
 
         public static ConversationMember DeserializeConversationMember(object data)
         {
             var map = data as Dictionary<string, object>;
-            var lastDeliveredId = Guid.Parse((map?[nameof(ConversationMember.LastDeliveredMessageId)] as string)!);
-            var lastDeliveredDate = ((Timestamp)map?[nameof(ConversationMember.LastDeliveredMessageDate)]!).ToDateTime();
             var lastSeenId = Guid.Parse((map?[nameof(ConversationMember.LastSeenMessageId)] as string)!);
             var lastSeenDate = ((Timestamp)map?[nameof(ConversationMember.LastSeenMessageDate)]!).ToDateTime();
+            var lastSeenMessageCounter = GetLastSeenMessageCounter(map);
 
-            return new ConversationMember(
-                lastDeliveredId,
-                lastDeliveredDate,
-                lastSeenId,
-                lastSeenDate);
+            return new ConversationMember(lastSeenId, lastSeenDate, lastSeenMessageCounter);
+        }
+
+        private static long GetLastSeenMessageCounter(Dictionary<string, object>? map)
+        {
+            if (map is not null)
+            {
+                map.TryGetValue(nameof(ConversationMember.LastSeenMessageCounter), out var lastSeenMessageCounter);
+                return lastSeenMessageCounter is long v ? v : Message.UnavailableCounterValue;
+            }
+            else
+            {
+                return Message.UnavailableCounterValue;
+            }
         }
     }
 }

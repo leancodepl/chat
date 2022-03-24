@@ -9,11 +9,13 @@ using LeanCode.Firebase.Firestore;
 
 namespace LeanCode.Chat.Services.DataAccess
 {
-    public partial class ChatStorage
+    public class ChatService
     {
+        private readonly Serilog.ILogger logger = Serilog.Log.ForContext<ChatService>();
+
         private readonly FirestoreDatabase db;
 
-        public ChatStorage(FirestoreDatabase db)
+        public ChatService(FirestoreDatabase db)
         {
             this.db = db;
         }
@@ -57,29 +59,44 @@ namespace LeanCode.Chat.Services.DataAccess
             return doc.CreateAsync(ConversationsSerializer.SerializeNewConversation(c));
         }
 
-        public virtual async Task<Conversation?> AddMessageAsync(
-            Message message,
-            Func<Conversation, ConversationMember> apply)
+        public virtual async Task<(Conversation, Message)?> AddMessageAsync(
+            Guid conversationId,
+            Func<Conversation, Message> createFreshMessage,
+            Func<Conversation, bool> validateAction)
         {
-            var msgDoc = db.Database.Message(message.Id);
-            var convDoc = db.Database.Conversation(message.ConversationId);
-
-            return await db.Database.RunTransactionAsync(async transaction =>
+            return await db.Database.RunTransactionAsync<(Conversation, Message)?>(async transaction =>
             {
+                var convDoc = db.Database.Conversation(conversationId);
+
                 var convSnapshot = await transaction.GetSnapshotAsync(convDoc);
                 var conversation = ConversationsSerializer.DeserializeConversation(convSnapshot);
+
                 if (conversation is null)
                 {
+                    logger.Information(
+                        "Cannot send new message to conversation {ConversationId}, the conversation does not exist",
+                        conversationId);
                     return null;
                 }
 
-                var updatedMember = apply(conversation);
+                if (!validateAction(conversation))
+                {
+                    logger.Information(
+                        "Cannot send new message to conversation {ConversationId}, the validation did not pass",
+                        conversationId);
+                    return null;
+                }
+
+                var message = createFreshMessage(conversation);
+                var msgDoc = db.Database.Message(message.Id);
+
+                var updatedMember = ConversationMember.ForSeenMessage(message);
 
                 transaction.Create(msgDoc, MessagesSerializer.SerializeMessage(message));
                 transaction.Set(convDoc, ConversationsSerializer.SerializeConversationUpdateForNewMessage(message, updatedMember), SetOptions.MergeAll);
 
-                var membersIdsToUpdate = ConversationCountersService.GetMemberIdsForIncrementOnNewMessage(conversation, message);
-                foreach (var memberId in membersIdsToUpdate)
+                var membersIdsToIncrement = ConversationCountersService.GetMemberIdsForIncrementOnNewMessage(conversation, message);
+                foreach (var memberId in membersIdsToIncrement)
                 {
                     transaction.Set(
                         db.Database.UnreadConversationCounter(memberId),
@@ -87,14 +104,23 @@ namespace LeanCode.Chat.Services.DataAccess
                         SetOptions.MergeAll);
                 }
 
-                return conversation;
+                var membersIdsToDecrement = ConversationCountersService.GetMemberIdsForDecrementOnNewMessage(conversation, message);
+                foreach (var memberId in membersIdsToDecrement)
+                {
+                    transaction.Set(
+                        db.Database.UnreadConversationCounter(memberId),
+                        ConversationCountersSerializer.SerializeConversationCounterDecrement(),
+                        SetOptions.MergeAll);
+                }
+
+                return (conversation, message);
             });
         }
 
         public virtual async Task UpdateMemberLastSeenMessageAsync(
             Guid userId,
             Message message,
-            Func<Conversation?, ConversationMember?> apply)
+            Func<Conversation, Message, bool> validateAction)
         {
             var doc = db.Database.Conversation(message.ConversationId);
 
@@ -102,13 +128,23 @@ namespace LeanCode.Chat.Services.DataAccess
             {
                 var convSnapshot = await transaction.GetSnapshotAsync(doc);
                 var conversation = ConversationsSerializer.DeserializeConversation(convSnapshot);
-                var member = apply(conversation);
-                if (member is null)
+
+                if (conversation is null)
                 {
-                    return false;
+                    logger.Information(
+                        "Cannot mark message {Message} as read in conversation {ConversationId}, the conversation does not exist",
+                        message.Id, message.ConversationId);
+                    return;
+                }
+                else if (!validateAction(conversation, message))
+                {
+                    logger.Information(
+                        "Not marking message {Message} as read in conversation {ConversationId}, the validation did not pass",
+                        message.Id, message.ConversationId);
+                    return;
                 }
 
-                var newMember = member.ForSeenMessage(message);
+                var newMember = ConversationMember.ForSeenMessage(message);
 
                 if (ConversationCountersService.ShouldDecrementCounterOnMessageSeen(conversation!, userId, message.Id))
                 {
@@ -119,8 +155,6 @@ namespace LeanCode.Chat.Services.DataAccess
                 }
 
                 transaction.Set(doc, ConversationsSerializer.SerializeMemberUpdate(userId, newMember), SetOptions.MergeAll);
-
-                return true;
             });
         }
 

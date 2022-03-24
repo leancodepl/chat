@@ -41,9 +41,9 @@ namespace LeanCode.Chat.Services.CQRS
     public class CreateConversationCH : ICommandHandler<ChatContext, CreateConversation>
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<CreateConversationCH>();
-        private readonly ChatStorage storage;
+        private readonly ChatService storage;
 
-        public CreateConversationCH(ChatStorage storage)
+        public CreateConversationCH(ChatService storage)
         {
             this.storage = storage;
         }

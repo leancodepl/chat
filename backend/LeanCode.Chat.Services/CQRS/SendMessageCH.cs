@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using FluentValidation;
 using LeanCode.Chat.Contracts;
@@ -52,9 +51,9 @@ namespace LeanCode.Chat.Services.CQRS
     public class SendMessageCH : ICommandHandler<ChatContext, SendMessage>
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<SendMessageCH>();
-        private readonly ChatStorage storage;
+        private readonly ChatService storage;
 
-        public SendMessageCH(ChatStorage storage)
+        public SendMessageCH(ChatService storage)
         {
             this.storage = storage;
         }
@@ -62,30 +61,20 @@ namespace LeanCode.Chat.Services.CQRS
         public async Task ExecuteAsync(ChatContext context, SendMessage command)
         {
             var userId = context.UserId;
-            var message = Message.Create(command.MessageId, command.ConversationId, userId, command.Content);
 
-            var conversation = await storage.AddMessageAsync(message, conv =>
+            var data = await storage.AddMessageAsync(
+                command.ConversationId,
+                conv => conv.WriteMessage(command.MessageId, userId, command.Content),
+                conv => conv.InConversation(userId));
+
+            if (data is not null)
             {
-                if (conv is null)
-                {
-                    throw new InvalidOperationException("Conversation does not exist.");
-                }
-
-                if (!conv.InConversation(userId))
-                {
-                    throw new InvalidOperationException("User is not in conversation.");
-                }
-
-                return conv.Members[userId].ForSeenMessage(message);
-            });
-
-            if (conversation is not null)
-            {
-                message.NotifySent(conversation);
+                var (conv, msg) = data.Value;
+                msg.NotifySent(conv);
 
                 logger.Information(
                     "User {UserId} sent message to conversation {ConversationId}",
-                    userId, conversation.Id);
+                    userId, conv.Id);
             }
             else
             {
