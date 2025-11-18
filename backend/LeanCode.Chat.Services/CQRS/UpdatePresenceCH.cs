@@ -20,7 +20,7 @@ namespace LeanCode.Chat.Services.CQRS
             this.storage = storage;
             this.userIdExtractor = userIdExtractor;
         }
-        
+
         public async Task ExecuteAsync(HttpContext context, UpdatePresence command)
         {
             var userId = userIdExtractor.Extract(context.User);

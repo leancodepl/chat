@@ -16,14 +16,13 @@ namespace LeanCode.Chat.Services.DataAccess.Serializers
                 c.NextMessageCounter,
                 Members = c.Members.ToDictionary(
                     pair => pair.Key.ToString(),
-                    pair => SerializeConversationMember(pair.Value)),
+                    pair => SerializeConversationMember(pair.Value)
+                ),
 
                 // To facilite clients queries for data
                 LastMessage = new { Exists = false },
                 Timestamp = FieldValue.ServerTimestamp,
-                MemberIds = c.Members.Keys
-                    .Select(m => m.ToString())
-                    .ToList(),
+                MemberIds = c.Members.Keys.Select(m => m.ToString()).ToList(),
             };
         }
 
@@ -44,10 +43,7 @@ namespace LeanCode.Chat.Services.DataAccess.Serializers
         {
             return new
             {
-                Members = new Dictionary<string, object>
-                {
-                    [id.ToString()] = SerializeConversationMember(member),
-                },
+                Members = new Dictionary<string, object> { [id.ToString()] = SerializeConversationMember(member) },
                 Timestamp = FieldValue.ServerTimestamp,
             };
         }
@@ -86,9 +82,7 @@ namespace LeanCode.Chat.Services.DataAccess.Serializers
             var id = Guid.Parse(doc.Id);
 
             var members = doc.GetValue<Dictionary<string, object>>(nameof(Conversation.Members))
-                .ToDictionary(
-                    pair => Guid.Parse(pair.Key),
-                    pair => DeserializeConversationMember(pair.Value));
+                .ToDictionary(pair => Guid.Parse(pair.Key), pair => DeserializeConversationMember(pair.Value));
 
             var metadata = doc.GetValue<Dictionary<string, string>>(nameof(Conversation.Metadata));
 
@@ -106,7 +100,8 @@ namespace LeanCode.Chat.Services.DataAccess.Serializers
                 members,
                 lastMessage,
                 metadata,
-                nextMessageCounter ?? Conversation.InitialCounterValue);
+                nextMessageCounter ?? Conversation.InitialCounterValue
+            );
         }
 
         public static ConversationMember DeserializeConversationMember(object data)

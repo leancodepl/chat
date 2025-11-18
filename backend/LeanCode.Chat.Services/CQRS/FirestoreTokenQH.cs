@@ -19,7 +19,6 @@ namespace LeanCode.Chat.Services.CQRS
             this.userIdExtractor = userIdExtractor;
         }
 
-
         public Task<string> ExecuteAsync(HttpContext context, FirestoreToken query)
         {
             var auth = FirebaseAuth.GetAuth(app);

@@ -16,10 +16,7 @@ namespace LeanCode.Chat.Services.CQRS
         {
             ClassLevelCascadeMode = CascadeMode.Stop;
 
-            RuleFor(cmd => cmd.MessageId)
-                .NotEmpty()
-                .WithCode(Errors.NoMessageId)
-                .WithMessage("No message id");
+            RuleFor(cmd => cmd.MessageId).NotEmpty().WithCode(Errors.NoMessageId).WithMessage("No message id");
         }
     }
 
@@ -34,7 +31,7 @@ namespace LeanCode.Chat.Services.CQRS
             this.storage = storage;
             this.userIdExtractor = userIdExtractor;
         }
-        
+
         public async Task ExecuteAsync(HttpContext context, MarkMessageAsSeen command)
         {
             var userId = userIdExtractor.Extract(context.User);
@@ -45,7 +42,8 @@ namespace LeanCode.Chat.Services.CQRS
                 logger.Information(
                     "User {UserId} attempted to mark a non-existing message {MessageId}, ignoring",
                     userId,
-                    command.MessageId);
+                    command.MessageId
+                );
                 return;
             }
 
@@ -59,7 +57,8 @@ namespace LeanCode.Chat.Services.CQRS
                         logger.Information(
                             "User {UserId} attempted to access messages from conversation {ConversationId} they do not belong to, ignoring",
                             userId,
-                            conv.Id);
+                            conv.Id
+                        );
                         return false;
                     }
                     else
@@ -67,7 +66,8 @@ namespace LeanCode.Chat.Services.CQRS
                         var member = conv.Members[userId];
                         return member.LastSeenMessageCounter < message.MessageCounter;
                     }
-                });
+                }
+            );
         }
     }
 }

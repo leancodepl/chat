@@ -6,10 +6,7 @@ namespace LeanCode.Chat.Services.DataAccess.Serializers
     {
         public static object SerializeUserPresence()
         {
-            return new
-            {
-                LastSeen = FieldValue.ServerTimestamp,
-            };
+            return new { LastSeen = FieldValue.ServerTimestamp };
         }
     }
 }

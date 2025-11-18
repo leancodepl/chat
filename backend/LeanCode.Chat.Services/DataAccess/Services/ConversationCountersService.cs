@@ -9,16 +9,18 @@ namespace LeanCode.Chat.Services.DataAccess.Services
     {
         public static IEnumerable<Guid> GetMemberIdsForIncrementOnNewMessage(
             Conversation conversation,
-            Message newMessage)
+            Message newMessage
+        )
         {
-            return conversation.Members
-                .Where(m => !conversation.HasUnreadMessages(m.Key) && m.Key != newMessage.SenderId)
+            return conversation
+                .Members.Where(m => !conversation.HasUnreadMessages(m.Key) && m.Key != newMessage.SenderId)
                 .Select(m => m.Key);
         }
 
         public static IEnumerable<Guid> GetMemberIdsForDecrementOnNewMessage(
             Conversation conversation,
-            Message newMessage)
+            Message newMessage
+        )
         {
             if (conversation.HasUnreadMessages(newMessage.SenderId))
             {
@@ -26,7 +28,11 @@ namespace LeanCode.Chat.Services.DataAccess.Services
             }
         }
 
-        public static bool ShouldDecrementCounterOnMessageSeen(Conversation conversation, Guid userId, Guid seenMessageId)
+        public static bool ShouldDecrementCounterOnMessageSeen(
+            Conversation conversation,
+            Guid userId,
+            Guid seenMessageId
+        )
         {
             return conversation.HasUnreadMessages(userId) && seenMessageId == conversation.LastMessage?.Id;
         }

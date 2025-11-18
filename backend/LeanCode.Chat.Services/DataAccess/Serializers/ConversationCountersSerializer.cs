@@ -6,18 +6,12 @@ namespace LeanCode.Chat.Services.DataAccess.Serializers
     {
         public static object SerializeConversationCounterIncrement()
         {
-            return new
-            {
-                Count = FieldValue.Increment(1),
-            };
+            return new { Count = FieldValue.Increment(1) };
         }
 
         public static object SerializeConversationCounterDecrement()
         {
-            return new
-            {
-                Count = FieldValue.Increment(-1),
-            };
+            return new { Count = FieldValue.Increment(-1) };
         }
     }
 }

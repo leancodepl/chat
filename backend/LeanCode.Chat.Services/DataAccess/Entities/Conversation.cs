@@ -50,7 +50,8 @@ namespace LeanCode.Chat.Services.DataAccess.Entities
             Dictionary<Guid, ConversationMember> members,
             Message? lastMessage,
             Dictionary<string, string> metadata,
-            long nextMessageCounter)
+            long nextMessageCounter
+        )
         {
             Id = id;
             this.members = members;
@@ -59,7 +60,11 @@ namespace LeanCode.Chat.Services.DataAccess.Entities
             NextMessageCounter = nextMessageCounter;
         }
 
-        public static Conversation Create(Guid id, IEnumerable<Guid> members, Dictionary<string, string>? metadata = null)
+        public static Conversation Create(
+            Guid id,
+            IEnumerable<Guid> members,
+            Dictionary<string, string>? metadata = null
+        )
         {
             var conversation = new Conversation
             {
@@ -76,7 +81,7 @@ namespace LeanCode.Chat.Services.DataAccess.Entities
 
         public Message WriteMessage(Guid guid, Guid senderId, string content)
         {
-            return Message.Create(guid, Id, senderId,  NextMessageCounter, content);
+            return Message.Create(guid, Id, senderId, NextMessageCounter, content);
         }
     }
 }

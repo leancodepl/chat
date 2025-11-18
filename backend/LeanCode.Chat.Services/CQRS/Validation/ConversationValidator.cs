@@ -9,18 +9,23 @@ namespace LeanCode.Chat.Services.CQRS.Validation
 {
     public class ConversationValidator : AbstractValidator<Guid>
     {
-        public ConversationValidator(
-            int notExistsCode,
-            int userNotInConversationCode)
+        public ConversationValidator(int notExistsCode, int userNotInConversationCode)
         {
-            RuleFor(id => id).CustomAsync((id, ctx, _) => ValidateConversationAsync(id, ctx, notExistsCode, userNotInConversationCode));
+            RuleFor(id => id)
+                .CustomAsync(
+                    (id, ctx, _) => ValidateConversationAsync(id, ctx, notExistsCode, userNotInConversationCode)
+                );
         }
-        
-        private static async Task ValidateConversationAsync(Guid id,ValidationContext<Guid> ctx, int notExistsCode, int userNotInConversationCode)
+
+        private static async Task ValidateConversationAsync(
+            Guid id,
+            ValidationContext<Guid> ctx,
+            int notExistsCode,
+            int userNotInConversationCode
+        )
         {
             var userId = ctx.GetService<GuidUserIdExtractor>().Extract(ctx.HttpContext().User);
-            var conv = await ctx.GetService<ChatService>()
-                .GetConversationAsync(id);
+            var conv = await ctx.GetService<ChatService>().GetConversationAsync(id);
 
             if (conv is null)
             {

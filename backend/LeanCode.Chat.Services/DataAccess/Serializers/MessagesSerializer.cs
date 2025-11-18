@@ -40,7 +40,8 @@ namespace LeanCode.Chat.Services.DataAccess.Serializers
                 senderId,
                 dateSent,
                 msgCounter ?? Message.UnavailableCounterValue,
-                content);
+                content
+            );
         }
 
         public static Message? DeserializeMessage(Dictionary<string, object> map)
@@ -52,13 +53,7 @@ namespace LeanCode.Chat.Services.DataAccess.Serializers
             var content = (map?[nameof(Message.Content)] as string)!;
             var msgCounter = GetMessageCounter(map);
 
-            return new Message(
-                id,
-                conversationId,
-                senderId,
-                dateSent,
-                msgCounter,
-                content);
+            return new Message(id, conversationId, senderId, dateSent, msgCounter, content);
         }
 
         private static long GetMessageCounter(Dictionary<string, object>? map)

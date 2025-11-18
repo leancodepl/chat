@@ -13,11 +13,7 @@ namespace LeanCode.Chat.Contracts.Notifications
 
         public static NewMessageNotificationContentDTO Create(Guid conversationId, Guid messageId)
         {
-            return new NewMessageNotificationContentDTO
-            {
-                ConversationId = conversationId,
-                MessageId = messageId,
-            };
+            return new NewMessageNotificationContentDTO { ConversationId = conversationId, MessageId = messageId };
         }
     }
 }

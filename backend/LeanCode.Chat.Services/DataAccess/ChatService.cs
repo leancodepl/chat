@@ -26,9 +26,14 @@ namespace LeanCode.Chat.Services.DataAccess
             return ConversationsSerializer.DeserializeConversation(snap);
         }
 
-        public virtual async Task<Conversation?> GetConversationAsync(HashSet<Guid> members, string metadataProperty, string? metadataValue)
+        public virtual async Task<Conversation?> GetConversationAsync(
+            HashSet<Guid> members,
+            string metadataProperty,
+            string? metadataValue
+        )
         {
-            var query = db.Database.Conversations()
+            var query = db
+                .Database.Conversations()
                 .WhereEqualTo($"{nameof(Conversation.Metadata)}.{metadataProperty}", metadataValue);
 
             foreach (var member in members)
@@ -36,8 +41,7 @@ namespace LeanCode.Chat.Services.DataAccess
                 query = query.WhereEqualTo($"{nameof(Conversation.Members)}.{member}.Exists", true);
             }
 
-            var snap = await query.Limit(1)
-                .GetSnapshotAsync();
+            var snap = await query.Limit(1).GetSnapshotAsync();
 
             if (snap.Count == 0)
             {
@@ -62,7 +66,8 @@ namespace LeanCode.Chat.Services.DataAccess
         public virtual async Task<(Conversation, Message)?> AddMessageAsync(
             Guid conversationId,
             Func<Conversation, Message> createFreshMessage,
-            Func<Conversation, bool> validateAction)
+            Func<Conversation, bool> validateAction
+        )
         {
             return await db.Database.RunTransactionAsync<(Conversation, Message)?>(async transaction =>
             {
@@ -75,7 +80,8 @@ namespace LeanCode.Chat.Services.DataAccess
                 {
                     logger.Information(
                         "Cannot send new message to conversation {ConversationId}, the conversation does not exist",
-                        conversationId);
+                        conversationId
+                    );
                     return null;
                 }
 
@@ -83,7 +89,8 @@ namespace LeanCode.Chat.Services.DataAccess
                 {
                     logger.Information(
                         "Cannot send new message to conversation {ConversationId}, the validation did not pass",
-                        conversationId);
+                        conversationId
+                    );
                     return null;
                 }
 
@@ -93,24 +100,36 @@ namespace LeanCode.Chat.Services.DataAccess
                 var updatedMember = ConversationMember.ForSeenMessage(message);
 
                 transaction.Create(msgDoc, MessagesSerializer.SerializeMessage(message));
-                transaction.Set(convDoc, ConversationsSerializer.SerializeConversationUpdateForNewMessage(message, updatedMember), SetOptions.MergeAll);
+                transaction.Set(
+                    convDoc,
+                    ConversationsSerializer.SerializeConversationUpdateForNewMessage(message, updatedMember),
+                    SetOptions.MergeAll
+                );
 
-                var membersIdsToIncrement = ConversationCountersService.GetMemberIdsForIncrementOnNewMessage(conversation, message);
+                var membersIdsToIncrement = ConversationCountersService.GetMemberIdsForIncrementOnNewMessage(
+                    conversation,
+                    message
+                );
                 foreach (var memberId in membersIdsToIncrement)
                 {
                     transaction.Set(
                         db.Database.UnreadConversationCounter(memberId),
                         ConversationCountersSerializer.SerializeConversationCounterIncrement(),
-                        SetOptions.MergeAll);
+                        SetOptions.MergeAll
+                    );
                 }
 
-                var membersIdsToDecrement = ConversationCountersService.GetMemberIdsForDecrementOnNewMessage(conversation, message);
+                var membersIdsToDecrement = ConversationCountersService.GetMemberIdsForDecrementOnNewMessage(
+                    conversation,
+                    message
+                );
                 foreach (var memberId in membersIdsToDecrement)
                 {
                     transaction.Set(
                         db.Database.UnreadConversationCounter(memberId),
                         ConversationCountersSerializer.SerializeConversationCounterDecrement(),
-                        SetOptions.MergeAll);
+                        SetOptions.MergeAll
+                    );
                 }
 
                 return (conversation, message);
@@ -120,7 +139,8 @@ namespace LeanCode.Chat.Services.DataAccess
         public virtual async Task UpdateMemberLastSeenMessageAsync(
             Guid userId,
             Message message,
-            Func<Conversation, Message, bool> validateAction)
+            Func<Conversation, Message, bool> validateAction
+        )
         {
             var doc = db.Database.Conversation(message.ConversationId);
 
@@ -133,14 +153,18 @@ namespace LeanCode.Chat.Services.DataAccess
                 {
                     logger.Information(
                         "Cannot mark message {Message} as read in conversation {ConversationId}, the conversation does not exist",
-                        message.Id, message.ConversationId);
+                        message.Id,
+                        message.ConversationId
+                    );
                     return;
                 }
                 else if (!validateAction(conversation, message))
                 {
                     logger.Information(
                         "Not marking message {Message} as read in conversation {ConversationId}, the validation did not pass",
-                        message.Id, message.ConversationId);
+                        message.Id,
+                        message.ConversationId
+                    );
                     return;
                 }
 
@@ -151,10 +175,15 @@ namespace LeanCode.Chat.Services.DataAccess
                     transaction.Set(
                         db.Database.UnreadConversationCounter(userId),
                         ConversationCountersSerializer.SerializeConversationCounterDecrement(),
-                        SetOptions.MergeAll);
+                        SetOptions.MergeAll
+                    );
                 }
 
-                transaction.Set(doc, ConversationsSerializer.SerializeMemberUpdate(userId, newMember), SetOptions.MergeAll);
+                transaction.Set(
+                    doc,
+                    ConversationsSerializer.SerializeMemberUpdate(userId, newMember),
+                    SetOptions.MergeAll
+                );
             });
         }
 

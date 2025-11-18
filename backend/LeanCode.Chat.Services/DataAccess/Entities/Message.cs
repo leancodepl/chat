@@ -25,7 +25,8 @@ namespace LeanCode.Chat.Services.DataAccess.Entities
             Guid senderId,
             DateTime dateSent,
             long messageCounter,
-            string content)
+            string content
+        )
         {
             Id = id;
             ConversationId = conversationId;
@@ -37,13 +38,7 @@ namespace LeanCode.Chat.Services.DataAccess.Entities
 
         internal static Message Create(Guid guid, Guid conversationId, Guid senderId, long nextCounter, string content)
         {
-            return new(
-                guid,
-                conversationId,
-                senderId,
-                Time.UtcNow,
-                nextCounter,
-                content);
+            return new(guid, conversationId, senderId, Time.UtcNow, nextCounter, content);
         }
 
         public void NotifySent(Conversation conversation)

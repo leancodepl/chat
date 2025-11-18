@@ -24,7 +24,8 @@ namespace LeanCode.Chat.Services.Processes
             ChatConfiguration configuration,
             FCMClient<Guid> fcm,
             IPushNotificationTokenStore<Guid> pushNotificationTokenStore,
-            IChatPushNotificationsLocalizer pushNotificationsLocalizer)
+            IChatPushNotificationsLocalizer pushNotificationsLocalizer
+        )
         {
             this.configuration = configuration;
             this.fcm = fcm;
@@ -38,7 +39,8 @@ namespace LeanCode.Chat.Services.Processes
             {
                 logger.Information(
                     "Sending default notification for new message is disabled, skipping sending PN for message {MessageId}",
-                    context.Message.MessageId);
+                    context.Message.MessageId
+                );
                 return;
             }
 
@@ -46,9 +48,7 @@ namespace LeanCode.Chat.Services.Processes
 
             var conversationId = message.ConversationId;
             var messageId = message.MessageId;
-            var recipients = message.ConversationMembers
-                .Where(m => m != message.SenderId)
-                .ToList();
+            var recipients = message.ConversationMembers.Where(m => m != message.SenderId).ToList();
 
             var localesMap = await pushNotificationsLocalizer.GetUserLocales(recipients);
             var allLocales = localesMap.Values.Distinct().ToList();
@@ -60,8 +60,14 @@ namespace LeanCode.Chat.Services.Processes
                 SenderId = message.SenderId,
             };
 
-            var localizations = await pushNotificationsLocalizer.LocalizeNewMessageNotification(localizationData, allLocales);
-            var userTokens = await pushNotificationTokenStore.GetTokensAsync(recipients.ToHashSet(), context.CancellationToken);
+            var localizations = await pushNotificationsLocalizer.LocalizeNewMessageNotification(
+                localizationData,
+                allLocales
+            );
+            var userTokens = await pushNotificationTokenStore.GetTokensAsync(
+                recipients.ToHashSet(),
+                context.CancellationToken
+            );
 
             var tokensPerLocale = recipients
                 .Select(r =>
@@ -75,9 +81,7 @@ namespace LeanCode.Chat.Services.Processes
                     };
                 })
                 .GroupBy(g => g.Locale)
-                .ToDictionary(
-                    g => g.Key,
-                    g => g.SelectMany(x => x.Tokens).ToList());
+                .ToDictionary(g => g.Key, g => g.SelectMany(x => x.Tokens).ToList());
 
             foreach (var (locale, tokens) in tokensPerLocale)
             {
@@ -85,7 +89,8 @@ namespace LeanCode.Chat.Services.Processes
                 {
                     logger.Information(
                         "No users with tokens for locale {Locale}, skipping sending notification",
-                        locale);
+                        locale
+                    );
                     return;
                 }
 
@@ -103,28 +108,22 @@ namespace LeanCode.Chat.Services.Processes
                     Android = new AndroidConfig
                     {
                         CollapseKey = conversationId.ToString(),
-                        Notification = new AndroidNotification
-                        {
-                            Tag = conversationId.ToString(),
-                        },
+                        Notification = new AndroidNotification { Tag = conversationId.ToString() },
                     },
                     Apns = new ApnsConfig
                     {
-                        Aps = new Aps
-                        {
-                            ThreadId = conversationId.ToString(),
-                            Sound = "default",
-                        },
+                        Aps = new Aps { ThreadId = conversationId.ToString(), Sound = "default" },
                     },
                 };
 
                 await fcm.SendMulticastAsync(fcmMessage);
 
                 logger.Information(
-                        "Notification for message {MessageId} sent to {TokensCount} devices for users with locale {Locale}",
-                        message.MessageId,
-                        tokens.Count,
-                        locale);
+                    "Notification for message {MessageId} sent to {TokensCount} devices for users with locale {Locale}",
+                    message.MessageId,
+                    tokens.Count,
+                    locale
+                );
             }
         }
     }

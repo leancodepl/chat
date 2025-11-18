@@ -19,10 +19,7 @@ namespace LeanCode.Chat.Services.CQRS
         {
             ClassLevelCascadeMode = CascadeMode.Stop;
 
-            RuleFor(cmd => cmd.Members)
-                .NotEmpty()
-                .WithCode(Errors.NoMembers)
-                .WithMessage("No conversation members");
+            RuleFor(cmd => cmd.Members).NotEmpty().WithCode(Errors.NoMembers).WithMessage("No conversation members");
 
             RuleFor(cmd => cmd)
                 .MustAsync(ValidateCommandAsync)
@@ -30,9 +27,12 @@ namespace LeanCode.Chat.Services.CQRS
                 .WithMessage("Cannot create conversation");
         }
 
-        private static Task<bool> ValidateCommandAsync(CreateConversation cmd,CreateConversation _,
-            IValidationContext ctx, CancellationToken cancellationToken
-            )
+        private static Task<bool> ValidateCommandAsync(
+            CreateConversation cmd,
+            CreateConversation _,
+            IValidationContext ctx,
+            CancellationToken cancellationToken
+        )
         {
             var userId = ctx.GetService<GuidUserIdExtractor>().Extract(ctx.HttpContext().User);
             var validator = ctx.GetService<IChatValidator>();
@@ -50,7 +50,7 @@ namespace LeanCode.Chat.Services.CQRS
         {
             this.storage = storage;
         }
-        
+
         public async Task ExecuteAsync(HttpContext context, CreateConversation command)
         {
             var conv = Conversation.Create(command.ConversationId, command.Members, command.Metadata);

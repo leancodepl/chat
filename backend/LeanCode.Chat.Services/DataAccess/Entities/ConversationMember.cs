@@ -9,10 +9,7 @@ namespace LeanCode.Chat.Services.DataAccess.Entities
         public DateTime LastSeenMessageDate { get; private init; }
         public long LastSeenMessageCounter { get; private init; }
 
-        public ConversationMember(
-            Guid lastSeenMessageId,
-            DateTime lastSeenMessageDate,
-            long lastSeenMessageCounter)
+        public ConversationMember(Guid lastSeenMessageId, DateTime lastSeenMessageDate, long lastSeenMessageCounter)
         {
             LastSeenMessageId = lastSeenMessageId;
             LastSeenMessageDate = lastSeenMessageDate;
