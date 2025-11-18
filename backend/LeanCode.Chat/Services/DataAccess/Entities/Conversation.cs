@@ -5,83 +5,78 @@ using System.Linq;
 using LeanCode.Chat.Services.DataAccess.Events;
 using LeanCode.DomainModels.Model;
 
-namespace LeanCode.Chat.Services.DataAccess.Entities
+namespace LeanCode.Chat.Services.DataAccess.Entities;
+
+public class Conversation
 {
-    public class Conversation
+    public const int InitialCounterValue = 0;
+
+    private Dictionary<Guid, ConversationMember> members;
+    private Dictionary<string, string> metadata;
+
+    public Guid Id { get; private set; }
+    public IReadOnlyDictionary<string, string> Metadata => metadata;
+    public IReadOnlyDictionary<Guid, ConversationMember> Members => members;
+    public Message? LastMessage { get; private set; }
+
+    public long NextMessageCounter { get; private set; }
+
+    public bool InConversation(Guid userId) => Members.ContainsKey(userId);
+
+    public bool TryGetMember(Guid userId, [NotNullWhen(true)] out ConversationMember? member)
     {
-        public const int InitialCounterValue = 0;
+        return Members.TryGetValue(userId, out member);
+    }
 
-        private Dictionary<Guid, ConversationMember> members;
-        private Dictionary<string, string> metadata;
-
-        public Guid Id { get; private set; }
-        public IReadOnlyDictionary<string, string> Metadata => metadata;
-        public IReadOnlyDictionary<Guid, ConversationMember> Members => members;
-        public Message? LastMessage { get; private set; }
-
-        public long NextMessageCounter { get; private set; }
-
-        public bool InConversation(Guid userId) => Members.ContainsKey(userId);
-
-        public bool TryGetMember(Guid userId, [NotNullWhen(true)] out ConversationMember? member)
+    public bool HasUnreadMessages(Guid userId)
+    {
+        if (!TryGetMember(userId, out var member))
         {
-            return Members.TryGetValue(userId, out member);
+            throw new InvalidOperationException("Member does not exist");
         }
 
-        public bool HasUnreadMessages(Guid userId)
+        return LastMessage != null && LastMessage.Id != member.LastSeenMessageId;
+    }
+
+    private Conversation()
+    {
+        members = new();
+        metadata = new();
+    }
+
+    // For firestore & tests
+    internal Conversation(
+        Guid id,
+        Dictionary<Guid, ConversationMember> members,
+        Message? lastMessage,
+        Dictionary<string, string> metadata,
+        long nextMessageCounter
+    )
+    {
+        Id = id;
+        this.members = members;
+        this.metadata = metadata;
+        LastMessage = lastMessage;
+        NextMessageCounter = nextMessageCounter;
+    }
+
+    public static Conversation Create(Guid id, IEnumerable<Guid> members, Dictionary<string, string>? metadata = null)
+    {
+        var conversation = new Conversation
         {
-            if (!TryGetMember(userId, out var member))
-            {
-                throw new InvalidOperationException("Member does not exist");
-            }
+            Id = id,
+            members = members.ToDictionary(m => m, _ => ConversationMember.Empty()),
+            LastMessage = null,
+            metadata = metadata ?? new Dictionary<string, string>(),
+        };
 
-            return LastMessage != null && LastMessage.Id != member.LastSeenMessageId;
-        }
+        DomainEvents.Raise(new ConversationCreated(conversation));
 
-        private Conversation()
-        {
-            members = new();
-            metadata = new();
-        }
+        return conversation;
+    }
 
-        // For firestore & tests
-        internal Conversation(
-            Guid id,
-            Dictionary<Guid, ConversationMember> members,
-            Message? lastMessage,
-            Dictionary<string, string> metadata,
-            long nextMessageCounter
-        )
-        {
-            Id = id;
-            this.members = members;
-            this.metadata = metadata;
-            LastMessage = lastMessage;
-            NextMessageCounter = nextMessageCounter;
-        }
-
-        public static Conversation Create(
-            Guid id,
-            IEnumerable<Guid> members,
-            Dictionary<string, string>? metadata = null
-        )
-        {
-            var conversation = new Conversation
-            {
-                Id = id,
-                members = members.ToDictionary(m => m, _ => ConversationMember.Empty()),
-                LastMessage = null,
-                metadata = metadata ?? new Dictionary<string, string>(),
-            };
-
-            DomainEvents.Raise(new ConversationCreated(conversation));
-
-            return conversation;
-        }
-
-        public Message WriteMessage(Guid guid, Guid senderId, string content)
-        {
-            return Message.Create(guid, Id, senderId, NextMessageCounter, content);
-        }
+    public Message WriteMessage(Guid guid, Guid senderId, string content)
+    {
+        return Message.Create(guid, Id, senderId, NextMessageCounter, content);
     }
 }

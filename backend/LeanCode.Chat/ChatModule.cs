@@ -1,13 +1,12 @@
 using LeanCode.Chat.Services.DataAccess;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace LeanCode.Chat
+namespace LeanCode.Chat;
+
+public static class ChatModule
 {
-    public static class ChatModule
+    public static void AddLeanChat(this IServiceCollection services)
     {
-        public static void AddLeanChat(this IServiceCollection services)
-        {
-            services.AddTransient<ChatService>();
-        }
+        services.AddTransient<ChatService>();
     }
 }

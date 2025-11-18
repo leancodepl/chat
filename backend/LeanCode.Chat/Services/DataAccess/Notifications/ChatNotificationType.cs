@@ -1,7 +1,6 @@
-namespace LeanCode.Chat.Services.DataAccess.Notifications
+namespace LeanCode.Chat.Services.DataAccess.Notifications;
+
+public enum ChatNotificationType
 {
-    public enum ChatNotificationType
-    {
-        NewMessage = 1,
-    }
+    NewMessage = 1,
 }

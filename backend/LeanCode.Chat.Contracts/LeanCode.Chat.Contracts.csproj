@@ -1,44 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <OutputType>Library</OutputType>
-    <Deterministic>true</Deterministic>
-    <Nullable>enable</Nullable>
-    <DebugType>embedded</DebugType>
-
-    <CoreLibVersion>10.0.2709-preview</CoreLibVersion>
-
-    <Company>LeanCode</Company>
-    <RepositoryUrl>https://github.com/leancodepl/chat</RepositoryUrl>
-    <RepositoryCommit Condition="'$(GITHUB_SHA)' != ''">$(GITHUB_SHA)</RepositoryCommit>
-
-    <Version Condition="'$(GITHUB_RUN_NUMBER)' != ''">$(CoreLibVersion).$(GITHUB_RUN_NUMBER)</Version>
-    <Version Condition="'$(GITHUB_RUN_NUMBER)' == ''">$(CoreLibVersion)</Version>
-
-   <InformationalVersion Condition="'$(RepositoryCommit)' != ''">$(Version)+$(RepositoryCommit)</InformationalVersion>
-   <InformationalVersion Condition="'$(RepositoryCommit)' == ''">$(Version)+local</InformationalVersion>
-  </PropertyGroup>
-
-  <Target Name="PrintVersion" BeforeTargets="Build">
-    <Message Importance="high" Text="             Version: $(Version)" />
-    <Message Importance="high" Text="InformationalVersion: $(InformationalVersion)" />
-  </Target>
-
   <ItemGroup>
-    <PackageReference Include="LeanCode.Components" Version="$(CoreLibVersion)" />
-    <PackageReference Include="LeanCode.Contracts" Version="2.0.0" />
-    <PackageReference Include="LeanCode.CQRS.Execution" Version="$(CoreLibVersion)" />
-    <PackageReference Include="LeanCode.CQRS.Security" Version="$(CoreLibVersion)" />
-    <PackageReference Include="LeanCode.CQRS.Validation.Fluent" Version="$(CoreLibVersion)" />
-    <PackageReference Include="LeanCode.DomainModels" Version="$(CoreLibVersion)" />
-    <PackageReference Include="LeanCode.CQRS.MassTransitRelay" Version="$(CoreLibVersion)" />
-    <PackageReference Include="LeanCode.Firebase.FCM" Version="$(CoreLibVersion)" />
-    <PackageReference Include="LeanCode.Firebase.Firestore" Version="$(CoreLibVersion)" />
-    <PackageReference Include="LeanCode.UserIdExtractors" Version="$(CoreLibVersion)" />
-    <PackageReference Include="LeanCode.TimeProvider" Version="$(CoreLibVersion)" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="LeanCode.CodeAnalysis" Version="$(CoreLibVersion)" PrivateAssets="all" />
+    <PackageReference Include="LeanCode.Contracts" />
   </ItemGroup>
 </Project>

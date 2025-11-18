@@ -1,12 +1,11 @@
 using Google.Cloud.Firestore;
 
-namespace LeanCode.Chat.Services.DataAccess.Serializers
+namespace LeanCode.Chat.Services.DataAccess.Serializers;
+
+internal static class UserPresenceSerializer
 {
-    internal static class UserPresenceSerializer
+    public static object SerializeUserPresence()
     {
-        public static object SerializeUserPresence()
-        {
-            return new { LastSeen = FieldValue.ServerTimestamp };
-        }
+        return new { LastSeen = FieldValue.ServerTimestamp };
     }
 }

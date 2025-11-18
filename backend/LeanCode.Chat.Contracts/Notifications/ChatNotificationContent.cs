@@ -1,12 +1,11 @@
-namespace LeanCode.Chat.Contracts.Notifications
-{
-    public abstract record ChatNotificationContent
-    {
-        public abstract ChatNotificationTypeDTO ChatNotificationType { get; }
-    }
+namespace LeanCode.Chat.Contracts.Notifications;
 
-    public enum ChatNotificationTypeDTO
-    {
-        NewMessage = 1,
-    }
+public abstract record ChatNotificationContent
+{
+    public abstract ChatNotificationTypeDTO ChatNotificationType { get; }
+}
+
+public enum ChatNotificationTypeDTO
+{
+    NewMessage = 1,
 }
