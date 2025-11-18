@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.Chat", "LeanCode.Chat\LeanCode.Chat.csproj", "{232F22EE-476C-4F89-8338-9C090AF6BDA6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeanCode.Chat.Contracts", "LeanCode.Chat.Contracts\LeanCode.Chat.Contracts.csproj", "{815C1972-3B9C-4526-92BA-710515AC1106}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{232F22EE-476C-4F89-8338-9C090AF6BDA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{232F22EE-476C-4F89-8338-9C090AF6BDA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{232F22EE-476C-4F89-8338-9C090AF6BDA6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{815C1972-3B9C-4526-92BA-710515AC1106}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{815C1972-3B9C-4526-92BA-710515AC1106}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{815C1972-3B9C-4526-92BA-710515AC1106}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{815C1972-3B9C-4526-92BA-710515AC1106}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

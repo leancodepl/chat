@@ -1,4 +1,4 @@
-namespace LeanCode.Chat
+namespace LeanCode.Chat.Contracts
 {
     public static class ChatRoles
     {

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <OutputType>Library</OutputType>
@@ -15,8 +15,8 @@
     <Version Condition="'$(GITHUB_RUN_NUMBER)' != ''">$(CoreLibVersion).$(GITHUB_RUN_NUMBER)</Version>
     <Version Condition="'$(GITHUB_RUN_NUMBER)' == ''">$(CoreLibVersion)</Version>
 
-    <InformationalVersion Condition="'$(RepositoryCommit)' != ''">$(Version)+$(RepositoryCommit)</InformationalVersion>
-    <InformationalVersion Condition="'$(RepositoryCommit)' == ''">$(Version)+local</InformationalVersion>
+   <InformationalVersion Condition="'$(RepositoryCommit)' != ''">$(Version)+$(RepositoryCommit)</InformationalVersion>
+   <InformationalVersion Condition="'$(RepositoryCommit)' == ''">$(Version)+local</InformationalVersion>
   </PropertyGroup>
 
   <Target Name="PrintVersion" BeforeTargets="Build">
@@ -40,9 +40,5 @@
 
   <ItemGroup>
     <PackageReference Include="LeanCode.CodeAnalysis" Version="$(CoreLibVersion)" PrivateAssets="all" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="../LeanCode.Chat.Contracts/LeanCode.Chat.Contracts.csproj" />
   </ItemGroup>
 </Project>
