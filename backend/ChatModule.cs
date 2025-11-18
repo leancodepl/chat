@@ -1,15 +1,13 @@
-using Autofac;
 using LeanCode.Chat.Services.DataAccess;
-using LeanCode.Components;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.Chat
 {
-    public class ChatModule : AppModule
+    public static class ChatModule
     {
-        protected override void Load(ContainerBuilder builder)
+        public static void AddLeanChat(this IServiceCollection services)
         {
-            builder.RegisterType<ChatService>()
-                .AsSelf();
+            services.AddTransient<ChatService>();
         }
     }
 }

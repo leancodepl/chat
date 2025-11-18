@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,14 +16,14 @@ namespace LeanCode.Chat.Services.Processes
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<SendPNOnNewMessage>();
         private readonly ChatConfiguration configuration;
-        private readonly FCMClient fcm;
-        private readonly IPushNotificationTokenStore pushNotificationTokenStore;
+        private readonly FCMClient<Guid> fcm;
+        private readonly IPushNotificationTokenStore<Guid> pushNotificationTokenStore;
         private readonly IChatPushNotificationsLocalizer pushNotificationsLocalizer;
 
         public SendPNOnNewMessage(
             ChatConfiguration configuration,
-            FCMClient fcm,
-            IPushNotificationTokenStore pushNotificationTokenStore,
+            FCMClient<Guid> fcm,
+            IPushNotificationTokenStore<Guid> pushNotificationTokenStore,
             IChatPushNotificationsLocalizer pushNotificationsLocalizer)
         {
             this.configuration = configuration;

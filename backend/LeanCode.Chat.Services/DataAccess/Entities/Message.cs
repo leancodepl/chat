@@ -1,7 +1,7 @@
 using System;
 using LeanCode.Chat.Services.DataAccess.Events;
 using LeanCode.DomainModels.Model;
-using LeanCode.Time;
+using LeanCode.TimeProvider;
 
 namespace LeanCode.Chat.Services.DataAccess.Entities
 {
@@ -41,7 +41,7 @@ namespace LeanCode.Chat.Services.DataAccess.Entities
                 guid,
                 conversationId,
                 senderId,
-                TimeProvider.Now,
+                Time.UtcNow,
                 nextCounter,
                 content);
         }

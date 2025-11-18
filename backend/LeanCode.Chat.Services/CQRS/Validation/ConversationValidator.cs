@@ -3,36 +3,33 @@ using System.Threading.Tasks;
 using FluentValidation;
 using LeanCode.Chat.Services.DataAccess;
 using LeanCode.CQRS.Validation.Fluent;
+using LeanCode.UserIdExtractors.Extractors;
 
 namespace LeanCode.Chat.Services.CQRS.Validation
 {
-    public class ConversationValidator : ContextualValidator<Guid>
+    public class ConversationValidator : AbstractValidator<Guid>
     {
         public ConversationValidator(
             int notExistsCode,
             int userNotInConversationCode)
         {
-            RuleForAsync(id => id, ValidateConversationAsync)
-                .Cascade(CascadeMode.Stop)
-                .Must(e => e.Exists)
-                    .WithCode(notExistsCode)
-                    .WithMessage("Conversation does not exist")
-                .Must(e => e.IsMember)
-                    .WithCode(userNotInConversationCode)
-                    .WithMessage("User is not in conversation");
+            RuleFor(id => id).CustomAsync((id, ctx, _) => ValidateConversationAsync(id, ctx, notExistsCode, userNotInConversationCode));
         }
-
-        private static async Task<(bool Exists, bool IsMember)> ValidateConversationAsync(
-            IValidationContext ctx,
-            Guid conversationId)
+        
+        private static async Task ValidateConversationAsync(Guid id,ValidationContext<Guid> ctx, int notExistsCode, int userNotInConversationCode)
         {
-            var userId = ctx.AppContext<ChatContext>().UserId;
+            var userId = ctx.GetService<GuidUserIdExtractor>().Extract(ctx.HttpContext().User);
             var conv = await ctx.GetService<ChatService>()
-                .GetConversationAsync(conversationId);
+                .GetConversationAsync(id);
 
-            return (
-                conv != null,
-                conv?.InConversation(userId) ?? false);
+            if (conv is null)
+            {
+                ctx.AddValidationError("Conversation does not exist", notExistsCode);
+            }
+            else if (!conv.InConversation(userId))
+            {
+                ctx.AddValidationError("User is not in conversation", userNotInConversationCode);
+            }
         }
     }
 }

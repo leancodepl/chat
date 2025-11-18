@@ -1,5 +1,5 @@
 using System;
-using LeanCode.Time;
+using LeanCode.TimeProvider;
 
 namespace LeanCode.Chat.Services.DataAccess.Entities
 {
@@ -26,7 +26,7 @@ namespace LeanCode.Chat.Services.DataAccess.Entities
 
         public static ConversationMember Empty()
         {
-            var now = TimeProvider.Now;
+            var now = Time.UtcNow;
             return new ConversationMember(Guid.Empty, now, Message.UnavailableCounterValue);
         }
     }

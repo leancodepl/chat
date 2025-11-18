@@ -1,20 +1,22 @@
+using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
 using LeanCode.Chat.Contracts;
 using LeanCode.Chat.Services.CQRS.Validation;
 using LeanCode.Chat.Services.DataAccess;
-using LeanCode.Chat.Services.DataAccess.Entities;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Validation.Fluent;
+using LeanCode.UserIdExtractors.Extractors;
+using Microsoft.AspNetCore.Http;
 using Errors = LeanCode.Chat.Contracts.SendMessage.ErrorCodes;
 
 namespace LeanCode.Chat.Services.CQRS
 {
-    public class SendMessageCV : ContextualValidator<SendMessage>
+    public class SendMessageCV : AbstractValidator<SendMessage>
     {
         public SendMessageCV()
         {
-            CascadeMode = CascadeMode.Stop;
+            ClassLevelCascadeMode = CascadeMode.Stop;
 
             RuleFor(cmd => cmd.MessageId)
                 .NotEmpty()
@@ -31,36 +33,38 @@ namespace LeanCode.Chat.Services.CQRS
                 .WithCode(Errors.NoContent)
                 .WithMessage("No content");
 
-            RuleForAsync(cmd => cmd, ValidateCommandAsync)
-                .Equal(true)
+            RuleFor(cmd => cmd)
+                .MustAsync(ValidateCommandAsync)
                 .WithCode(Errors.CannotSendMessage)
                 .WithMessage("Cannot send message");
         }
 
-        private static Task<bool> ValidateCommandAsync(
+        private static Task<bool> ValidateCommandAsync(SendMessage cmd, SendMessage _,
             IValidationContext ctx,
-            SendMessage cmd)
+            CancellationToken cancellationToken)
         {
-            var chatContext = ctx.AppContext<ChatContext>();
+            var userId = ctx.GetService<GuidUserIdExtractor>().Extract(ctx.HttpContext().User);
             var validator = ctx.GetService<IChatValidator>();
 
-            return validator.CanSendMessageAsync(chatContext.UserId, cmd, chatContext.CancellationToken);
+            return validator.CanSendMessageAsync(userId, cmd, cancellationToken);
         }
     }
 
-    public class SendMessageCH : ICommandHandler<ChatContext, SendMessage>
+    public class SendMessageCH : ICommandHandler<SendMessage>
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<SendMessageCH>();
         private readonly ChatService storage;
+        private readonly GuidUserIdExtractor userIdExtractor;
 
-        public SendMessageCH(ChatService storage)
+        public SendMessageCH(ChatService storage, GuidUserIdExtractor userIdExtractor)
         {
             this.storage = storage;
+            this.userIdExtractor = userIdExtractor;
         }
-
-        public async Task ExecuteAsync(ChatContext context, SendMessage command)
+        
+        public async Task ExecuteAsync(HttpContext context, SendMessage command)
         {
-            var userId = context.UserId;
+            var userId = userIdExtractor.Extract(context.User);
 
             var data = await storage.AddMessageAsync(
                 command.ConversationId,

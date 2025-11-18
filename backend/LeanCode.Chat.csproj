@@ -27,7 +27,7 @@
 
   <ItemGroup>
     <PackageReference Include="LeanCode.Components" Version="$(CoreLibVersion)" />
-    <PackageReference Include="LeanCode.CQRS" Version="6.1.1603" />
+    <PackageReference Include="LeanCode.Contracts" Version="2.0.0" />
     <PackageReference Include="LeanCode.CQRS.Cache" Version="7.0.1636" />
     <PackageReference Include="LeanCode.CQRS.Execution" Version="$(CoreLibVersion)" />
     <PackageReference Include="LeanCode.CQRS.Security" Version="$(CoreLibVersion)" />
@@ -36,6 +36,7 @@
     <PackageReference Include="LeanCode.DomainModels.MassTransitRelay" Version="7.0.1785" />
     <PackageReference Include="LeanCode.Firebase.FCM" Version="$(CoreLibVersion)" />
     <PackageReference Include="LeanCode.Firebase.Firestore" Version="$(CoreLibVersion)" />
+    <PackageReference Include="LeanCode.UserIdExtractors" Version="$(CoreLibVersion)" />
     <PackageReference Include="LeanCode.TimeProvider" Version="$(CoreLibVersion)" />
   </ItemGroup>
 

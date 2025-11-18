@@ -1,11 +1,11 @@
 using System;
-using LeanCode.CQRS;
-using LeanCode.CQRS.Security;
+using LeanCode.Contracts;
+using LeanCode.Contracts.Security;
 
 namespace LeanCode.Chat.Contracts
 {
     [AuthorizeWhenHasAnyOf(ChatRoles.ChatUser)]
-    public class MarkMessageAsSeen : IRemoteCommand
+    public class MarkMessageAsSeen : ICommand
     {
         public Guid MessageId { get; set; }
 

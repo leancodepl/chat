@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
-using LeanCode.CQRS;
-using LeanCode.CQRS.Security;
+using LeanCode.Contracts;
+using LeanCode.Contracts.Security;
 
 namespace LeanCode.Chat.Contracts
 {
     [AuthorizeWhenHasAnyOf(ChatRoles.ChatUser)]
-    public class CreateConversation : IRemoteCommand
+    public class CreateConversation : ICommand
     {
         public Guid ConversationId { get; set; }
         public HashSet<Guid> Members { get; set; } = null!;

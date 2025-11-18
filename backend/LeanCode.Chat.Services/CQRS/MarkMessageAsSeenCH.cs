@@ -4,15 +4,17 @@ using LeanCode.Chat.Contracts;
 using LeanCode.Chat.Services.DataAccess;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Validation.Fluent;
+using LeanCode.UserIdExtractors.Extractors;
+using Microsoft.AspNetCore.Http;
 using Errors = LeanCode.Chat.Contracts.MarkMessageAsSeen.ErrorCodes;
 
 namespace LeanCode.Chat.Services.CQRS
 {
-    public class MarkMessageAsSeenCV : ContextualValidator<MarkMessageAsSeen>
+    public class MarkMessageAsSeenCV : AbstractValidator<MarkMessageAsSeen>
     {
         public MarkMessageAsSeenCV()
         {
-            CascadeMode = CascadeMode.Stop;
+            ClassLevelCascadeMode = CascadeMode.Stop;
 
             RuleFor(cmd => cmd.MessageId)
                 .NotEmpty()
@@ -21,19 +23,21 @@ namespace LeanCode.Chat.Services.CQRS
         }
     }
 
-    public class MarkMessageAsSeenCH : ICommandHandler<ChatContext, MarkMessageAsSeen>
+    public class MarkMessageAsSeenCH : ICommandHandler<MarkMessageAsSeen>
     {
         private readonly Serilog.ILogger logger = Serilog.Log.ForContext<MarkMessageAsSeenCH>();
         private readonly ChatService storage;
+        private readonly GuidUserIdExtractor userIdExtractor;
 
-        public MarkMessageAsSeenCH(ChatService storage)
+        public MarkMessageAsSeenCH(ChatService storage, GuidUserIdExtractor userIdExtractor)
         {
             this.storage = storage;
+            this.userIdExtractor = userIdExtractor;
         }
-
-        public async Task ExecuteAsync(ChatContext context, MarkMessageAsSeen command)
+        
+        public async Task ExecuteAsync(HttpContext context, MarkMessageAsSeen command)
         {
-            var userId = context.UserId;
+            var userId = userIdExtractor.Extract(context.User);
             var message = await storage.GetMessageAsync(command.MessageId);
 
             if (message is null)
