@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LeanCode.Chat;
 
-public static class ChatModule
+public static class ChatServiceProviderExtensions
 {
     public static void AddLeanChat(this IServiceCollection services)
     {
