@@ -10,6 +10,8 @@
     <RepositoryUrl>https://github.com/leancodepl/chat</RepositoryUrl>
     <RepositoryCommit Condition="'$(GITHUB_SHA)' != ''">$(GITHUB_SHA)</RepositoryCommit>
 
+    <CoreLibVersion>10.0.2709-preview</CoreLibVersion>
+
     <Version Condition="'$(GITHUB_RUN_NUMBER)' != ''">$(CoreLibVersion).$(GITHUB_RUN_NUMBER)</Version>
     <Version Condition="'$(GITHUB_RUN_NUMBER)' == ''">$(CoreLibVersion)</Version>
 
