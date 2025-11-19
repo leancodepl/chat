@@ -29,11 +29,21 @@ jobs:
         run: dotnet restore
       - name: Build
         run: dotnet build --no-restore -c Release
-      - name: Pack
+      - name: Pack Chat Contracts
         if: ${{ github.ref == 'refs/heads/master' || contains(github.ref, 'refs/heads/v') }}
         run: dotnet pack --no-build -c Release
+        working-directory: ./backend/src/LeanCode.Chat.Contracts
+      - name: Pack Chat
+        if: ${{ github.ref == 'refs/heads/master' || contains(github.ref, 'refs/heads/v') }}
+        run: dotnet pack --no-build -c Release
+        working-directory: ./backend/src/LeanCode.Chat
       - name: Push to Feedz
         if: ${{ github.ref == 'refs/heads/master' || contains(github.ref, 'refs/heads/v') }}
-        run: find bin/Release -maxdepth 1 -name '*.nupkg' -exec dotnet nuget push -k "$FEEDZ_API_KEY" -s 'https://f.feedz.io/leancode/corelibrary/nuget/index.json' --no-symbols '{}' ';'
+        run: dotnet nuget push \
+          "src/LeanCode.Chat.Contracts/bin/Release/LeanCode.Chat.Contracts.*.nupkg" \
+          "src/LeanCode.Chat/bin/Release/LeanCode.Chat.*.nupkg" \
+          -k "$FEEDZ_API_KEY" \
+          -s 'https://f.feedz.io/leancode/public/nuget/index.json' \
+          -n
         env:
           FEEDZ_API_KEY: ${{ secrets.FEEDZ_API_KEY }}
