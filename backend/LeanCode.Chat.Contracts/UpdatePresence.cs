@@ -1,10 +1,7 @@
-using LeanCode.CQRS;
-using LeanCode.CQRS.Security;
+using LeanCode.Contracts;
+using LeanCode.Contracts.Security;
 
-namespace LeanCode.Chat.Contracts
-{
-    [AuthorizeWhenHasAnyOf(ChatRoles.ChatUser)]
-    public class UpdatePresence : IRemoteCommand
-    {
-    }
-}
+namespace LeanCode.Chat.Contracts;
+
+[AuthorizeWhenHasAnyOf(ChatRoles.ChatUser)]
+public class UpdatePresence : ICommand { }

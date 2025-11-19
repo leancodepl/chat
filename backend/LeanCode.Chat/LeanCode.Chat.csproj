@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <PackageReference Include="LeanCode.Components" />
+    <PackageReference Include="LeanCode.CQRS.Execution" />
+    <PackageReference Include="LeanCode.CQRS.Security" />
+    <PackageReference Include="LeanCode.CQRS.Validation.Fluent" />
+    <PackageReference Include="LeanCode.DomainModels" />
+    <PackageReference Include="LeanCode.CQRS.MassTransitRelay" />
+    <PackageReference Include="LeanCode.Firebase.FCM" />
+    <PackageReference Include="LeanCode.Firebase.Firestore" />
+    <PackageReference Include="LeanCode.UserIdExtractors" />
+    <PackageReference Include="LeanCode.TimeProvider" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../LeanCode.Chat.Contracts/LeanCode.Chat.Contracts.csproj" />
+  </ItemGroup>
+</Project>

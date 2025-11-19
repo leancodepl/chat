@@ -1,0 +1,25 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+
+    <CoreLibVersion>10.0.2709-preview</CoreLibVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageVersion Include="LeanCode.Components" Version="$(CoreLibVersion)" />
+    <PackageVersion Include="LeanCode.Contracts" Version="2.0.0" />
+    <PackageVersion Include="LeanCode.CQRS.Execution" Version="$(CoreLibVersion)" />
+    <PackageVersion Include="LeanCode.CQRS.Security" Version="$(CoreLibVersion)" />
+    <PackageVersion Include="LeanCode.CQRS.Validation.Fluent" Version="$(CoreLibVersion)" />
+    <PackageVersion Include="LeanCode.DomainModels" Version="$(CoreLibVersion)" />
+    <PackageVersion Include="LeanCode.CQRS.MassTransitRelay" Version="$(CoreLibVersion)" />
+    <PackageVersion Include="LeanCode.Firebase.FCM" Version="$(CoreLibVersion)" />
+    <PackageVersion Include="LeanCode.Firebase.Firestore" Version="$(CoreLibVersion)" />
+    <PackageVersion Include="LeanCode.UserIdExtractors" Version="$(CoreLibVersion)" />
+    <PackageVersion Include="LeanCode.TimeProvider" Version="$(CoreLibVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <GlobalPackageReference Include="LeanCode.CodeAnalysis" Version="$(CoreLibVersion)" PrivateAssets="all" />
+  </ItemGroup>
+</Project>
