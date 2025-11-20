@@ -39,11 +39,6 @@ jobs:
         working-directory: ./backend/LeanCode.Chat
       - name: Push to Feedz
         if: ${{ github.ref == 'refs/heads/master' || contains(github.ref, 'refs/heads/v') }}
-        run: dotnet nuget push \
-          "LeanCode.Chat.Contracts/bin/Release/LeanCode.Chat.Contracts.*.nupkg" \
-          "LeanCode.Chat/bin/Release/LeanCode.Chat.*.nupkg" \
-          -k "$FEEDZ_API_KEY" \
-          -s 'https://f.feedz.io/leancode/public/nuget/index.json' \
-          -n
+        run: find . -maxdepth 4 -name '*.nupkg' -exec dotnet nuget push -k "$FEEDZ_API_KEY" -s 'https://f.feedz.io/leancode/public/nuget/index.json' -n '{}' ';'
         env:
           FEEDZ_API_KEY: ${{ secrets.FEEDZ_API_KEY }}
