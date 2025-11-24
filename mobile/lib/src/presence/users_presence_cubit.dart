@@ -55,18 +55,11 @@ class UsersPresenceCubit extends Cubit<UsersPresenceState> {
   }
 
   void _onTick(Timer timer) {
-    emit(
-      state.copyWith(
-        statuses: _refreshStatuses(state.lastSeen),
-      ),
-    );
+    emit(state.copyWith(statuses: _refreshStatuses(state.lastSeen)));
   }
 
   void _updateState(Map<String, UserPresence> newLastSeen) {
-    final allLastSeen = {
-      ...state.lastSeen,
-      ...newLastSeen,
-    };
+    final allLastSeen = {...state.lastSeen, ...newLastSeen};
 
     emit(
       state.copyWith(
@@ -81,17 +74,17 @@ class UsersPresenceCubit extends Cubit<UsersPresenceState> {
   ) {
     return {
       for (final entry in lastSeen.entries)
-        entry.key: entry.value.getStatus(_chatClient.presencePolicy)
+        entry.key: entry.value.getStatus(_chatClient.presencePolicy),
     };
   }
 }
 
 @freezed
-class UsersPresenceState with _$UsersPresenceState {
+abstract class UsersPresenceState with _$UsersPresenceState {
   const factory UsersPresenceState({
     @Default(<String, UserPresence>{}) Map<String, UserPresence> lastSeen,
     @Default(<String, UserPresenceStatus>{})
-        Map<String, UserPresenceStatus> statuses,
+    Map<String, UserPresenceStatus> statuses,
   }) = _UsersPresenceState;
 
   const UsersPresenceState._();

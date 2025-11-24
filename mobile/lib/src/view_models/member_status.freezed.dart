@@ -1,6 +1,7 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
+// coverage:ignore-file
+// ignore_for_file: type=lint
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'member_status.dart';
 
@@ -8,160 +9,266 @@ part of 'member_status.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more informations: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
-
-/// @nodoc
-class _$MemberStatusTearOff {
-  const _$MemberStatusTearOff();
-
-  _MemberStatus call(
-      {required String? lastSeenMessageId,
-      required DateTime? lastSeenMessageDate}) {
-    return _MemberStatus(
-      lastSeenMessageId: lastSeenMessageId,
-      lastSeenMessageDate: lastSeenMessageDate,
-    );
-  }
-}
-
-/// @nodoc
-const $MemberStatus = _$MemberStatusTearOff();
-
 /// @nodoc
 mixin _$MemberStatus {
-  String? get lastSeenMessageId => throw _privateConstructorUsedError;
-  DateTime? get lastSeenMessageDate => throw _privateConstructorUsedError;
 
-  @JsonKey(ignore: true)
-  $MemberStatusCopyWith<MemberStatus> get copyWith =>
-      throw _privateConstructorUsedError;
+ String? get lastSeenMessageId; DateTime? get lastSeenMessageDate;
+/// Create a copy of MemberStatus
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$MemberStatusCopyWith<MemberStatus> get copyWith => _$MemberStatusCopyWithImpl<MemberStatus>(this as MemberStatus, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MemberStatus&&(identical(other.lastSeenMessageId, lastSeenMessageId) || other.lastSeenMessageId == lastSeenMessageId)&&(identical(other.lastSeenMessageDate, lastSeenMessageDate) || other.lastSeenMessageDate == lastSeenMessageDate));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,lastSeenMessageId,lastSeenMessageDate);
+
+@override
+String toString() {
+  return 'MemberStatus(lastSeenMessageId: $lastSeenMessageId, lastSeenMessageDate: $lastSeenMessageDate)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $MemberStatusCopyWith<$Res> {
-  factory $MemberStatusCopyWith(
-          MemberStatus value, $Res Function(MemberStatus) then) =
-      _$MemberStatusCopyWithImpl<$Res>;
-  $Res call({String? lastSeenMessageId, DateTime? lastSeenMessageDate});
+abstract mixin class $MemberStatusCopyWith<$Res>  {
+  factory $MemberStatusCopyWith(MemberStatus value, $Res Function(MemberStatus) _then) = _$MemberStatusCopyWithImpl;
+@useResult
+$Res call({
+ String? lastSeenMessageId, DateTime? lastSeenMessageDate
+});
+
+
+
+
 }
-
 /// @nodoc
-class _$MemberStatusCopyWithImpl<$Res> implements $MemberStatusCopyWith<$Res> {
-  _$MemberStatusCopyWithImpl(this._value, this._then);
+class _$MemberStatusCopyWithImpl<$Res>
+    implements $MemberStatusCopyWith<$Res> {
+  _$MemberStatusCopyWithImpl(this._self, this._then);
 
-  final MemberStatus _value;
-  // ignore: unused_field
+  final MemberStatus _self;
   final $Res Function(MemberStatus) _then;
 
-  @override
-  $Res call({
-    Object? lastSeenMessageId = freezed,
-    Object? lastSeenMessageDate = freezed,
-  }) {
-    return _then(_value.copyWith(
-      lastSeenMessageId: lastSeenMessageId == freezed
-          ? _value.lastSeenMessageId
-          : lastSeenMessageId // ignore: cast_nullable_to_non_nullable
-              as String?,
-      lastSeenMessageDate: lastSeenMessageDate == freezed
-          ? _value.lastSeenMessageDate
-          : lastSeenMessageDate // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-    ));
-  }
+/// Create a copy of MemberStatus
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? lastSeenMessageId = freezed,Object? lastSeenMessageDate = freezed,}) {
+  return _then(_self.copyWith(
+lastSeenMessageId: freezed == lastSeenMessageId ? _self.lastSeenMessageId : lastSeenMessageId // ignore: cast_nullable_to_non_nullable
+as String?,lastSeenMessageDate: freezed == lastSeenMessageDate ? _self.lastSeenMessageDate : lastSeenMessageDate // ignore: cast_nullable_to_non_nullable
+as DateTime?,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [MemberStatus].
+extension MemberStatusPatterns on MemberStatus {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _MemberStatus value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _MemberStatus() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _MemberStatus value)  $default,){
+final _that = this;
+switch (_that) {
+case _MemberStatus():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _MemberStatus value)?  $default,){
+final _that = this;
+switch (_that) {
+case _MemberStatus() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? lastSeenMessageId,  DateTime? lastSeenMessageDate)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _MemberStatus() when $default != null:
+return $default(_that.lastSeenMessageId,_that.lastSeenMessageDate);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? lastSeenMessageId,  DateTime? lastSeenMessageDate)  $default,) {final _that = this;
+switch (_that) {
+case _MemberStatus():
+return $default(_that.lastSeenMessageId,_that.lastSeenMessageDate);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? lastSeenMessageId,  DateTime? lastSeenMessageDate)?  $default,) {final _that = this;
+switch (_that) {
+case _MemberStatus() when $default != null:
+return $default(_that.lastSeenMessageId,_that.lastSeenMessageDate);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
-abstract class _$MemberStatusCopyWith<$Res>
-    implements $MemberStatusCopyWith<$Res> {
-  factory _$MemberStatusCopyWith(
-          _MemberStatus value, $Res Function(_MemberStatus) then) =
-      __$MemberStatusCopyWithImpl<$Res>;
-  @override
-  $Res call({String? lastSeenMessageId, DateTime? lastSeenMessageDate});
+
+
+class _MemberStatus implements MemberStatus {
+  const _MemberStatus({required this.lastSeenMessageId, required this.lastSeenMessageDate});
+  
+
+@override final  String? lastSeenMessageId;
+@override final  DateTime? lastSeenMessageDate;
+
+/// Create a copy of MemberStatus
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$MemberStatusCopyWith<_MemberStatus> get copyWith => __$MemberStatusCopyWithImpl<_MemberStatus>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MemberStatus&&(identical(other.lastSeenMessageId, lastSeenMessageId) || other.lastSeenMessageId == lastSeenMessageId)&&(identical(other.lastSeenMessageDate, lastSeenMessageDate) || other.lastSeenMessageDate == lastSeenMessageDate));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,lastSeenMessageId,lastSeenMessageDate);
+
+@override
+String toString() {
+  return 'MemberStatus(lastSeenMessageId: $lastSeenMessageId, lastSeenMessageDate: $lastSeenMessageDate)';
+}
+
+
 }
 
 /// @nodoc
-class __$MemberStatusCopyWithImpl<$Res> extends _$MemberStatusCopyWithImpl<$Res>
+abstract mixin class _$MemberStatusCopyWith<$Res> implements $MemberStatusCopyWith<$Res> {
+  factory _$MemberStatusCopyWith(_MemberStatus value, $Res Function(_MemberStatus) _then) = __$MemberStatusCopyWithImpl;
+@override @useResult
+$Res call({
+ String? lastSeenMessageId, DateTime? lastSeenMessageDate
+});
+
+
+
+
+}
+/// @nodoc
+class __$MemberStatusCopyWithImpl<$Res>
     implements _$MemberStatusCopyWith<$Res> {
-  __$MemberStatusCopyWithImpl(
-      _MemberStatus _value, $Res Function(_MemberStatus) _then)
-      : super(_value, (v) => _then(v as _MemberStatus));
+  __$MemberStatusCopyWithImpl(this._self, this._then);
 
-  @override
-  _MemberStatus get _value => super._value as _MemberStatus;
+  final _MemberStatus _self;
+  final $Res Function(_MemberStatus) _then;
 
-  @override
-  $Res call({
-    Object? lastSeenMessageId = freezed,
-    Object? lastSeenMessageDate = freezed,
-  }) {
-    return _then(_MemberStatus(
-      lastSeenMessageId: lastSeenMessageId == freezed
-          ? _value.lastSeenMessageId
-          : lastSeenMessageId // ignore: cast_nullable_to_non_nullable
-              as String?,
-      lastSeenMessageDate: lastSeenMessageDate == freezed
-          ? _value.lastSeenMessageDate
-          : lastSeenMessageDate // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-    ));
-  }
+/// Create a copy of MemberStatus
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? lastSeenMessageId = freezed,Object? lastSeenMessageDate = freezed,}) {
+  return _then(_MemberStatus(
+lastSeenMessageId: freezed == lastSeenMessageId ? _self.lastSeenMessageId : lastSeenMessageId // ignore: cast_nullable_to_non_nullable
+as String?,lastSeenMessageDate: freezed == lastSeenMessageDate ? _self.lastSeenMessageDate : lastSeenMessageDate // ignore: cast_nullable_to_non_nullable
+as DateTime?,
+  ));
 }
 
-/// @nodoc
 
-class _$_MemberStatus implements _MemberStatus {
-  const _$_MemberStatus(
-      {required this.lastSeenMessageId, required this.lastSeenMessageDate});
-
-  @override
-  final String? lastSeenMessageId;
-  @override
-  final DateTime? lastSeenMessageDate;
-
-  @override
-  String toString() {
-    return 'MemberStatus(lastSeenMessageId: $lastSeenMessageId, lastSeenMessageDate: $lastSeenMessageDate)';
-  }
-
-  @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _MemberStatus &&
-            const DeepCollectionEquality()
-                .equals(other.lastSeenMessageId, lastSeenMessageId) &&
-            const DeepCollectionEquality()
-                .equals(other.lastSeenMessageDate, lastSeenMessageDate));
-  }
-
-  @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(lastSeenMessageId),
-      const DeepCollectionEquality().hash(lastSeenMessageDate));
-
-  @JsonKey(ignore: true)
-  @override
-  _$MemberStatusCopyWith<_MemberStatus> get copyWith =>
-      __$MemberStatusCopyWithImpl<_MemberStatus>(this, _$identity);
 }
 
-abstract class _MemberStatus implements MemberStatus {
-  const factory _MemberStatus(
-      {required String? lastSeenMessageId,
-      required DateTime? lastSeenMessageDate}) = _$_MemberStatus;
-
-  @override
-  String? get lastSeenMessageId;
-  @override
-  DateTime? get lastSeenMessageDate;
-  @override
-  @JsonKey(ignore: true)
-  _$MemberStatusCopyWith<_MemberStatus> get copyWith =>
-      throw _privateConstructorUsedError;
-}
+// dart format on

@@ -6,7 +6,7 @@ import 'message.dart';
 part 'conversation.freezed.dart';
 
 @freezed
-class Conversation<TMember, TConversationData>
+abstract class Conversation<TMember, TConversationData>
     with _$Conversation<TMember, TConversationData> {
   const factory Conversation({
     required String id,
