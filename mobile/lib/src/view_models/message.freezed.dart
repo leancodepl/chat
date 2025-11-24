@@ -1,6 +1,7 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
+// coverage:ignore-file
+// ignore_for_file: type=lint
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'message.dart';
 
@@ -8,235 +9,275 @@ part of 'message.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more informations: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
-
-/// @nodoc
-class _$MessageTearOff {
-  const _$MessageTearOff();
-
-  _Message<TChatMember> call<TChatMember>(
-      {required String id,
-      required String content,
-      required DateTime dateSent,
-      required TChatMember sender,
-      required MessageUserType userType}) {
-    return _Message<TChatMember>(
-      id: id,
-      content: content,
-      dateSent: dateSent,
-      sender: sender,
-      userType: userType,
-    );
-  }
-}
-
-/// @nodoc
-const $Message = _$MessageTearOff();
-
 /// @nodoc
 mixin _$Message<TChatMember> {
-  String get id => throw _privateConstructorUsedError;
-  String get content => throw _privateConstructorUsedError;
-  DateTime get dateSent => throw _privateConstructorUsedError;
-  TChatMember get sender => throw _privateConstructorUsedError;
-  MessageUserType get userType => throw _privateConstructorUsedError;
 
-  @JsonKey(ignore: true)
-  $MessageCopyWith<TChatMember, Message<TChatMember>> get copyWith =>
-      throw _privateConstructorUsedError;
+ String get id; String get content; DateTime get dateSent; TChatMember get sender; MessageUserType get userType;
+/// Create a copy of Message
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$MessageCopyWith<TChatMember, Message<TChatMember>> get copyWith => _$MessageCopyWithImpl<TChatMember, Message<TChatMember>>(this as Message<TChatMember>, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Message<TChatMember>&&(identical(other.id, id) || other.id == id)&&(identical(other.content, content) || other.content == content)&&(identical(other.dateSent, dateSent) || other.dateSent == dateSent)&&const DeepCollectionEquality().equals(other.sender, sender)&&(identical(other.userType, userType) || other.userType == userType));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,id,content,dateSent,const DeepCollectionEquality().hash(sender),userType);
+
+@override
+String toString() {
+  return 'Message<$TChatMember>(id: $id, content: $content, dateSent: $dateSent, sender: $sender, userType: $userType)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $MessageCopyWith<TChatMember, $Res> {
-  factory $MessageCopyWith(Message<TChatMember> value,
-          $Res Function(Message<TChatMember>) then) =
-      _$MessageCopyWithImpl<TChatMember, $Res>;
-  $Res call(
-      {String id,
-      String content,
-      DateTime dateSent,
-      TChatMember sender,
-      MessageUserType userType});
-}
+abstract mixin class $MessageCopyWith<TChatMember,$Res>  {
+  factory $MessageCopyWith(Message<TChatMember> value, $Res Function(Message<TChatMember>) _then) = _$MessageCopyWithImpl;
+@useResult
+$Res call({
+ String id, String content, DateTime dateSent, TChatMember sender, MessageUserType userType
+});
 
+
+
+
+}
 /// @nodoc
-class _$MessageCopyWithImpl<TChatMember, $Res>
+class _$MessageCopyWithImpl<TChatMember,$Res>
     implements $MessageCopyWith<TChatMember, $Res> {
-  _$MessageCopyWithImpl(this._value, this._then);
+  _$MessageCopyWithImpl(this._self, this._then);
 
-  final Message<TChatMember> _value;
-  // ignore: unused_field
+  final Message<TChatMember> _self;
   final $Res Function(Message<TChatMember>) _then;
 
-  @override
-  $Res call({
-    Object? id = freezed,
-    Object? content = freezed,
-    Object? dateSent = freezed,
-    Object? sender = freezed,
-    Object? userType = freezed,
-  }) {
-    return _then(_value.copyWith(
-      id: id == freezed
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as String,
-      content: content == freezed
-          ? _value.content
-          : content // ignore: cast_nullable_to_non_nullable
-              as String,
-      dateSent: dateSent == freezed
-          ? _value.dateSent
-          : dateSent // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      sender: sender == freezed
-          ? _value.sender
-          : sender // ignore: cast_nullable_to_non_nullable
-              as TChatMember,
-      userType: userType == freezed
-          ? _value.userType
-          : userType // ignore: cast_nullable_to_non_nullable
-              as MessageUserType,
-    ));
-  }
+/// Create a copy of Message
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? content = null,Object? dateSent = null,Object? sender = freezed,Object? userType = null,}) {
+  return _then(_self.copyWith(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
+as String,dateSent: null == dateSent ? _self.dateSent : dateSent // ignore: cast_nullable_to_non_nullable
+as DateTime,sender: freezed == sender ? _self.sender : sender // ignore: cast_nullable_to_non_nullable
+as TChatMember,userType: null == userType ? _self.userType : userType // ignore: cast_nullable_to_non_nullable
+as MessageUserType,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [Message].
+extension MessagePatterns<TChatMember> on Message<TChatMember> {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _Message<TChatMember> value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _Message() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _Message<TChatMember> value)  $default,){
+final _that = this;
+switch (_that) {
+case _Message():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _Message<TChatMember> value)?  $default,){
+final _that = this;
+switch (_that) {
+case _Message() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String content,  DateTime dateSent,  TChatMember sender,  MessageUserType userType)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _Message() when $default != null:
+return $default(_that.id,_that.content,_that.dateSent,_that.sender,_that.userType);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String content,  DateTime dateSent,  TChatMember sender,  MessageUserType userType)  $default,) {final _that = this;
+switch (_that) {
+case _Message():
+return $default(_that.id,_that.content,_that.dateSent,_that.sender,_that.userType);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String content,  DateTime dateSent,  TChatMember sender,  MessageUserType userType)?  $default,) {final _that = this;
+switch (_that) {
+case _Message() when $default != null:
+return $default(_that.id,_that.content,_that.dateSent,_that.sender,_that.userType);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
-abstract class _$MessageCopyWith<TChatMember, $Res>
-    implements $MessageCopyWith<TChatMember, $Res> {
-  factory _$MessageCopyWith(_Message<TChatMember> value,
-          $Res Function(_Message<TChatMember>) then) =
-      __$MessageCopyWithImpl<TChatMember, $Res>;
-  @override
-  $Res call(
-      {String id,
-      String content,
-      DateTime dateSent,
-      TChatMember sender,
-      MessageUserType userType});
+
+
+class _Message<TChatMember> implements Message<TChatMember> {
+  const _Message({required this.id, required this.content, required this.dateSent, required this.sender, required this.userType});
+  
+
+@override final  String id;
+@override final  String content;
+@override final  DateTime dateSent;
+@override final  TChatMember sender;
+@override final  MessageUserType userType;
+
+/// Create a copy of Message
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$MessageCopyWith<TChatMember, _Message<TChatMember>> get copyWith => __$MessageCopyWithImpl<TChatMember, _Message<TChatMember>>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Message<TChatMember>&&(identical(other.id, id) || other.id == id)&&(identical(other.content, content) || other.content == content)&&(identical(other.dateSent, dateSent) || other.dateSent == dateSent)&&const DeepCollectionEquality().equals(other.sender, sender)&&(identical(other.userType, userType) || other.userType == userType));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,id,content,dateSent,const DeepCollectionEquality().hash(sender),userType);
+
+@override
+String toString() {
+  return 'Message<$TChatMember>(id: $id, content: $content, dateSent: $dateSent, sender: $sender, userType: $userType)';
+}
+
+
 }
 
 /// @nodoc
-class __$MessageCopyWithImpl<TChatMember, $Res>
-    extends _$MessageCopyWithImpl<TChatMember, $Res>
+abstract mixin class _$MessageCopyWith<TChatMember,$Res> implements $MessageCopyWith<TChatMember, $Res> {
+  factory _$MessageCopyWith(_Message<TChatMember> value, $Res Function(_Message<TChatMember>) _then) = __$MessageCopyWithImpl;
+@override @useResult
+$Res call({
+ String id, String content, DateTime dateSent, TChatMember sender, MessageUserType userType
+});
+
+
+
+
+}
+/// @nodoc
+class __$MessageCopyWithImpl<TChatMember,$Res>
     implements _$MessageCopyWith<TChatMember, $Res> {
-  __$MessageCopyWithImpl(
-      _Message<TChatMember> _value, $Res Function(_Message<TChatMember>) _then)
-      : super(_value, (v) => _then(v as _Message<TChatMember>));
+  __$MessageCopyWithImpl(this._self, this._then);
 
-  @override
-  _Message<TChatMember> get _value => super._value as _Message<TChatMember>;
+  final _Message<TChatMember> _self;
+  final $Res Function(_Message<TChatMember>) _then;
 
-  @override
-  $Res call({
-    Object? id = freezed,
-    Object? content = freezed,
-    Object? dateSent = freezed,
-    Object? sender = freezed,
-    Object? userType = freezed,
-  }) {
-    return _then(_Message<TChatMember>(
-      id: id == freezed
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as String,
-      content: content == freezed
-          ? _value.content
-          : content // ignore: cast_nullable_to_non_nullable
-              as String,
-      dateSent: dateSent == freezed
-          ? _value.dateSent
-          : dateSent // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      sender: sender == freezed
-          ? _value.sender
-          : sender // ignore: cast_nullable_to_non_nullable
-              as TChatMember,
-      userType: userType == freezed
-          ? _value.userType
-          : userType // ignore: cast_nullable_to_non_nullable
-              as MessageUserType,
-    ));
-  }
+/// Create a copy of Message
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? content = null,Object? dateSent = null,Object? sender = freezed,Object? userType = null,}) {
+  return _then(_Message<TChatMember>(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
+as String,dateSent: null == dateSent ? _self.dateSent : dateSent // ignore: cast_nullable_to_non_nullable
+as DateTime,sender: freezed == sender ? _self.sender : sender // ignore: cast_nullable_to_non_nullable
+as TChatMember,userType: null == userType ? _self.userType : userType // ignore: cast_nullable_to_non_nullable
+as MessageUserType,
+  ));
 }
 
-/// @nodoc
 
-class _$_Message<TChatMember> implements _Message<TChatMember> {
-  const _$_Message(
-      {required this.id,
-      required this.content,
-      required this.dateSent,
-      required this.sender,
-      required this.userType});
-
-  @override
-  final String id;
-  @override
-  final String content;
-  @override
-  final DateTime dateSent;
-  @override
-  final TChatMember sender;
-  @override
-  final MessageUserType userType;
-
-  @override
-  String toString() {
-    return 'Message<$TChatMember>(id: $id, content: $content, dateSent: $dateSent, sender: $sender, userType: $userType)';
-  }
-
-  @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _Message<TChatMember> &&
-            const DeepCollectionEquality().equals(other.id, id) &&
-            const DeepCollectionEquality().equals(other.content, content) &&
-            const DeepCollectionEquality().equals(other.dateSent, dateSent) &&
-            const DeepCollectionEquality().equals(other.sender, sender) &&
-            const DeepCollectionEquality().equals(other.userType, userType));
-  }
-
-  @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(id),
-      const DeepCollectionEquality().hash(content),
-      const DeepCollectionEquality().hash(dateSent),
-      const DeepCollectionEquality().hash(sender),
-      const DeepCollectionEquality().hash(userType));
-
-  @JsonKey(ignore: true)
-  @override
-  _$MessageCopyWith<TChatMember, _Message<TChatMember>> get copyWith =>
-      __$MessageCopyWithImpl<TChatMember, _Message<TChatMember>>(
-          this, _$identity);
 }
 
-abstract class _Message<TChatMember> implements Message<TChatMember> {
-  const factory _Message(
-      {required String id,
-      required String content,
-      required DateTime dateSent,
-      required TChatMember sender,
-      required MessageUserType userType}) = _$_Message<TChatMember>;
-
-  @override
-  String get id;
-  @override
-  String get content;
-  @override
-  DateTime get dateSent;
-  @override
-  TChatMember get sender;
-  @override
-  MessageUserType get userType;
-  @override
-  @JsonKey(ignore: true)
-  _$MessageCopyWith<TChatMember, _Message<TChatMember>> get copyWith =>
-      throw _privateConstructorUsedError;
-}
+// dart format on
