@@ -17,6 +17,13 @@
     <PackageVersion Include="LeanCode.Firebase.Firestore" Version="$(CoreLibVersion)" />
     <PackageVersion Include="LeanCode.UserIdExtractors" Version="$(CoreLibVersion)" />
     <PackageVersion Include="LeanCode.TimeProvider" Version="$(CoreLibVersion)" />
+    
+    <!-- Test packages -->
+    <PackageVersion Include="FluentAssertions" Version="7.0.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageVersion Include="xunit" Version="2.9.2" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.2" />
+    <PackageVersion Include="coverlet.collector" Version="6.0.2" />
   </ItemGroup>
 
   <ItemGroup>
