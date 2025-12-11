@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using FluentAssertions;
 using LeanCode.DomainModels.Model;
 using Xunit;
@@ -40,5 +41,29 @@ public partial class EventSerializationTests
             .Where(t => !t.IsAbstract);
 
         allEventTypes.Should().BeSubsetOf(verifiedEventTypes);
+    }
+
+    [Fact]
+    public void All_ctors_set_every_property()
+    {
+        var allEventTypes = Assemblies
+            .SelectMany(a => a.Types())
+            .ThatImplement<IDomainEvent>()
+            .Where(t => !t.IsAbstract);
+
+        foreach (var type in allEventTypes)
+        {
+            var ctor = type.GetConstructors()
+                .Single(t => t.CustomAttributes.Any(a => a.AttributeType == typeof(JsonConstructorAttribute)));
+            var properties = type.GetProperties();
+            ctor.GetParameters()
+                .Select(p => p.Name?.ToLower())
+                .Should()
+                .BeEquivalentTo(
+                    properties.Select(p => p.Name.ToLower()),
+                    "ctor {0} should set all properties",
+                    type.FullName
+                );
+        }
     }
 }
