@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using LeanCode.Chat.Services.DataAccess.Entities;
 using LeanCode.DomainModels.Model;
 using LeanCode.TimeProvider;
@@ -13,8 +14,8 @@ public record ConversationCreated : IDomainEvent
     public DateTime DateOccurred { get; private init; }
 
     public Guid ConversationId { get; private init; }
-    public List<Guid> ConversationMembers { get; private init; }
-    public IReadOnlyDictionary<string, string> Metadata { get; private init; }
+    public List<Guid> ConversationMembers { get; private init; } = null!;
+    public IReadOnlyDictionary<string, string> Metadata { get; private init; } = null!;
 
     public ConversationCreated(Conversation conversation)
     {
@@ -24,5 +25,22 @@ public record ConversationCreated : IDomainEvent
         ConversationId = conversation.Id;
         ConversationMembers = conversation.Members.Keys.ToList();
         Metadata = conversation.Metadata;
+    }
+
+    [Obsolete("For deserialization only")]
+    [JsonConstructor]
+    public ConversationCreated(
+        Guid id,
+        DateTime dateOccurred,
+        Guid conversationId,
+        List<Guid> conversationMembers,
+        IReadOnlyDictionary<string, string> metadata
+    )
+    {
+        Id = id;
+        DateOccurred = dateOccurred;
+        ConversationId = conversationId;
+        ConversationMembers = conversationMembers;
+        Metadata = metadata;
     }
 }
