@@ -29,6 +29,8 @@ jobs:
         run: dotnet restore
       - name: Build
         run: dotnet build --no-restore -c Release
+      - name: Test
+        run: dotnet test --no-build -c Release
       - name: Pack Chat Contracts
         if: ${{ github.ref == 'refs/heads/master' || contains(github.ref, 'refs/heads/v') }}
         run: dotnet pack --no-build -c Release
