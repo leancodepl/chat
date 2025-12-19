@@ -23,35 +23,21 @@ const conversationExtraData = '593eaa36-0a09-472b-a12e-f6ce73d6dac3';
 
 const conversation = Conversation<Member, ConversationData>(
   id: 'd7e5f49c-14a5-4d8d-ac84-9c7b803d33df',
-  members: [
-    conversationCurrentUser,
-    conversationOtherMember,
-  ],
+  members: [conversationCurrentUser, conversationOtherMember],
   data: null,
-  metadata: {
-    'ExtraData': null,
-  },
+  metadata: {'ExtraData': null},
   lastMessage: null,
   statuses: {},
   lockedByUserIds: [],
 );
 
-final conversationWithMessage = conversation.copyWith(
-  lastMessage: message0,
-);
+final conversationWithMessage = conversation.copyWith(lastMessage: message0);
 
 const metadataConversation = Conversation<Member, ConversationData>(
   id: 'edb4f687-01fb-4db1-81ff-4f67c888f040',
-  members: [
-    conversationCurrentUser,
-    conversationOtherMember,
-  ],
-  data: ConversationData(
-    extraData: 'extra',
-  ),
-  metadata: {
-    'ExtraData': conversationExtraData,
-  },
+  members: [conversationCurrentUser, conversationOtherMember],
+  data: ConversationData(extraData: 'extra'),
+  metadata: {'ExtraData': conversationExtraData},
   lastMessage: null,
   statuses: {},
   lockedByUserIds: [],

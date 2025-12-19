@@ -18,14 +18,9 @@ void main() {
         'ConversationId': 'cb034fde-28da-45fc-870e-8a188e6a340d',
       };
 
-      final message = MessageMapper.mapMessage(
-        messageId,
-        data,
-        {
-          conversationCurrentUser.id: conversationCurrentUser,
-        },
-        conversationCurrentUser.id,
-      );
+      final message = MessageMapper.mapMessage(messageId, data, {
+        conversationCurrentUser.id: conversationCurrentUser,
+      }, conversationCurrentUser.id);
 
       expect(
         message,
@@ -49,14 +44,9 @@ void main() {
         'ConversationId': 'cb034fde-28da-45fc-870e-8a188e6a340d',
       };
 
-      final message = MessageMapper.mapMessage(
-        messageId,
-        data,
-        {
-          conversationOtherMember.id: conversationOtherMember,
-        },
-        conversationCurrentUser.id,
-      );
+      final message = MessageMapper.mapMessage(messageId, data, {
+        conversationOtherMember.id: conversationOtherMember,
+      }, conversationCurrentUser.id);
 
       expect(
         message,

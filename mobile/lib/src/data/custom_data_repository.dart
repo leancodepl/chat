@@ -9,7 +9,7 @@ class CustomDataRepository<TMemberData, TConversationData> {
 
   final String? Function() _getCurrentUserId;
   final ChatCustomDataProvider<TMemberData, TConversationData>
-      _customDataProvider;
+  _customDataProvider;
 
   final Map<String, TMemberData> _membersCache = {};
   final Map<String, TConversationData> _conversationsCache = {};
@@ -39,9 +39,7 @@ class CustomDataRepository<TMemberData, TConversationData> {
     }
 
     return FetchCustomDataResult(
-      {
-        for (final memberId in memberIds) memberId: _membersCache[memberId],
-      },
+      {for (final memberId in memberIds) memberId: _membersCache[memberId]},
       {
         for (final conversation in conversationIntermediates)
           conversation.id: _conversationsCache[conversation.id],
@@ -59,16 +57,11 @@ class CustomDataRepository<TMemberData, TConversationData> {
     List<ConversationIntermediate> conversations,
   ) async {
     final conversationDataFuture = conversations.isNotEmpty
-        ? _customDataProvider.fetchConversationData(
-            conversations,
-          )
+        ? _customDataProvider.fetchConversationData(conversations)
         : Future.value(<String, TConversationData>{});
 
     final membersDataFuture = memberIds.isNotEmpty
-        ? _customDataProvider.fetchMembersData(
-            memberIds,
-            _getCurrentUserId(),
-          )
+        ? _customDataProvider.fetchMembersData(memberIds, _getCurrentUserId())
         : Future.value(<String, TMemberData>{});
 
     await Future.wait([

@@ -16,84 +16,67 @@ void main() {
       'LastDeliveredMessageDate': Timestamp.fromDate(fixedNow),
       'LastDeliveredMessageId': emptyGuid,
       'LastSeenMessageDate': Timestamp.fromDate(fixedNow),
-      'LastSeenMessageId': emptyGuid
+      'LastSeenMessageId': emptyGuid,
     };
 
-    test('correctly maps conversation without last message and auction data',
-        () {
-      final data = {
-        'LastMessage': {
-          'Exists': true,
-        },
-        'MemberIds': [
+    test(
+      'correctly maps conversation without last message and auction data',
+      () {
+        final data = {
+          'LastMessage': {'Exists': true},
+          'MemberIds': [conversationCurrentUser.id, conversationOtherMember.id],
+          'Members': {
+            conversationCurrentUser.id: emptyMemberStatus,
+            conversationOtherMember.id: emptyMemberStatus,
+          },
+          'Metadata': {'ExtraData': null},
+          'Timestamp': Timestamp.fromDate(fixedNow),
+          'LockedByUserIds': <String>[],
+        };
+
+        final conversation = ConversationMapper.mapConversation(
+          conversationId,
+          data,
+          null,
+          chatMembersData,
           conversationCurrentUser.id,
-          conversationOtherMember.id,
-        ],
-        'Members': {
-          conversationCurrentUser.id: emptyMemberStatus,
-          conversationOtherMember.id: emptyMemberStatus,
-        },
-        'Metadata': {
-          'ExtraData': null,
-        },
-        'Timestamp': Timestamp.fromDate(fixedNow),
-        'LockedByUserIds': <String>[],
-      };
+        );
 
-      final conversation = ConversationMapper.mapConversation(
-        conversationId,
-        data,
-        null,
-        chatMembersData,
-        conversationCurrentUser.id,
-      );
-
-      expect(
-        conversation,
-        equals(
-          Conversation(
-            id: conversationId,
-            metadata: {
-              'ExtraData': null,
-            },
-            data: null,
-            lastMessage: null,
-            members: [
-              conversationCurrentUser,
-              conversationOtherMember,
-            ],
-            statuses: {
-              conversationCurrentUser.id: MemberStatus(
-                lastSeenMessageDate: fixedNow,
-                lastSeenMessageId: emptyGuid,
-              ),
-              conversationOtherMember.id: MemberStatus(
-                lastSeenMessageDate: fixedNow,
-                lastSeenMessageId: emptyGuid,
-              ),
-            },
-            lockedByUserIds: [],
+        expect(
+          conversation,
+          equals(
+            Conversation(
+              id: conversationId,
+              metadata: {'ExtraData': null},
+              data: null,
+              lastMessage: null,
+              members: [conversationCurrentUser, conversationOtherMember],
+              statuses: {
+                conversationCurrentUser.id: MemberStatus(
+                  lastSeenMessageDate: fixedNow,
+                  lastSeenMessageId: emptyGuid,
+                ),
+                conversationOtherMember.id: MemberStatus(
+                  lastSeenMessageDate: fixedNow,
+                  lastSeenMessageId: emptyGuid,
+                ),
+              },
+              lockedByUserIds: [],
+            ),
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
 
     test('correctly maps conversation with auction data', () {
       final data = {
-        'LastMessage': {
-          'Exists': true,
-        },
-        'MemberIds': [
-          conversationCurrentUser.id,
-          conversationOtherMember.id,
-        ],
+        'LastMessage': {'Exists': true},
+        'MemberIds': [conversationCurrentUser.id, conversationOtherMember.id],
         'Members': {
           conversationCurrentUser.id: emptyMemberStatus,
           conversationOtherMember.id: emptyMemberStatus,
         },
-        'Metadata': {
-          'ExtraData': conversationExtraData,
-        },
+        'Metadata': {'ExtraData': conversationExtraData},
         'Timestamp': Timestamp.fromDate(fixedNow),
         'LockedByUserIds': [conversationOtherMember.id],
       };
@@ -111,15 +94,10 @@ void main() {
         equals(
           Conversation(
             id: conversationId,
-            metadata: {
-              'ExtraData': conversationExtraData,
-            },
+            metadata: {'ExtraData': conversationExtraData},
             data: metadataConversation.data,
             lastMessage: null,
-            members: [
-              conversationCurrentUser,
-              conversationOtherMember,
-            ],
+            members: [conversationCurrentUser, conversationOtherMember],
             statuses: {
               conversationCurrentUser.id: MemberStatus(
                 lastSeenMessageDate: fixedNow,
@@ -148,10 +126,7 @@ void main() {
           'DateSent': Timestamp.fromDate(fixedNow),
           'SenderId': conversationOtherMember.id,
         },
-        'MemberIds': [
-          conversationCurrentUser.id,
-          conversationOtherMember.id,
-        ],
+        'MemberIds': [conversationCurrentUser.id, conversationOtherMember.id],
         'Members': {
           conversationCurrentUser.id: {
             ...emptyMemberStatus,
@@ -162,9 +137,7 @@ void main() {
             'LastSeenMessageId': messageId,
           },
         },
-        'Metadata': {
-          'ExtraData': null,
-        },
+        'Metadata': {'ExtraData': null},
         'Timestamp': Timestamp.fromDate(fixedNow),
         'LockedByUserIds': [conversationOtherMember.id],
       };
@@ -182,9 +155,7 @@ void main() {
         equals(
           Conversation(
             id: conversationId,
-            metadata: {
-              'ExtraData': null,
-            },
+            metadata: {'ExtraData': null},
             data: null,
             lastMessage: Message(
               id: messageId,
@@ -193,10 +164,7 @@ void main() {
               sender: conversationOtherMember,
               userType: MessageUserType.receiver,
             ),
-            members: [
-              conversationCurrentUser,
-              conversationOtherMember,
-            ],
+            members: [conversationCurrentUser, conversationOtherMember],
             statuses: {
               conversationCurrentUser.id: MemberStatus(
                 lastSeenMessageDate: fixedNow,
