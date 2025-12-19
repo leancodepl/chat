@@ -45,7 +45,7 @@ class ChatClient<TMemberData, TConversationData> {
   Future<void> signIn() async {
     try {
       final tokenResult = await _cqrs.get(c.FirestoreToken());
-      String token;
+      final String token;
       switch (tokenResult) {
         case QuerySuccess(:final data):
           token = data;
