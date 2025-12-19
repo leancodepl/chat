@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
@@ -20,8 +21,7 @@ public class SendMessageCV : AbstractValidator<SendMessage>
 
         RuleFor(cmd => cmd.MessageId).NotEmpty().WithCode(Errors.NoMessageId).WithMessage("No message id");
 
-        RuleFor(cmd => cmd.ConversationId)
-            .SetValidator(new ConversationValidator(Errors.ConversationDoesNotExist, Errors.UserNotInConversation));
+        RuleFor(cmd => cmd.ConversationId).CustomAsync(ValidateConversationAsync);
 
         RuleFor(cmd => cmd.Content).NotEmpty().WithCode(Errors.NoContent).WithMessage("No content");
 
@@ -42,6 +42,25 @@ public class SendMessageCV : AbstractValidator<SendMessage>
         var validator = ctx.GetService<IChatValidator>();
 
         return validator.CanSendMessageAsync(userId, cmd, cancellationToken);
+    }
+
+    private static async Task ValidateConversationAsync(
+        Guid id,
+        ValidationContext<SendMessage> ctx,
+        CancellationToken cancellationToken
+    )
+    {
+        var userId = ctx.GetService<GuidUserIdExtractor>().Extract(ctx.HttpContext().User);
+        var conv = await ctx.GetService<ChatService>().GetConversationAsync(id);
+
+        if (conv is null)
+        {
+            ctx.AddValidationError("Conversation does not exist", Errors.ConversationDoesNotExist);
+        }
+        else if (!conv.InConversation(userId))
+        {
+            ctx.AddValidationError("User is not in conversation", Errors.UserNotInConversation);
+        }
     }
 }
 
