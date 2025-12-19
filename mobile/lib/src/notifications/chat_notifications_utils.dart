@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 
-const MethodChannel _channel = MethodChannel('leancode_chat_client');
+const _channel = MethodChannel('leancode_chat_client');
 
 /// Clears all received push notifications in a group
 ///

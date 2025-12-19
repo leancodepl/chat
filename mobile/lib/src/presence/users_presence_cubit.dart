@@ -10,9 +10,9 @@ part 'users_presence_cubit.freezed.dart';
 class UsersPresenceCubit extends Cubit<UsersPresenceState> {
   UsersPresenceCubit(this._chatClient) : super(const UsersPresenceState());
 
-  final ChatClient _chatClient;
+  final ChatClient<dynamic, dynamic> _chatClient;
   final Set<String> _subscribedUsers = {};
-  final List<StreamSubscription> _subscriptions = [];
+  final List<StreamSubscription<Map<String, UserPresence>>> _subscriptions = [];
 
   Timer? _timer;
   final _logger = Logger('UsersPresenceCubit');

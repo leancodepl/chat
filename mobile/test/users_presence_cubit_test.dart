@@ -10,12 +10,13 @@ import 'mocks.dart';
 void main() {
   group('UserPresenceCubit', () {
     late UsersPresenceCubit cubit;
-    late ChatClient chatClient;
+    late ChatClient<dynamic, dynamic> chatClient;
 
     setUp(() {
       chatClient = MockChatClient();
-      when(() => chatClient.presencePolicy)
-          .thenReturn(const DefaultUserPresencePolicy());
+      when(
+        () => chatClient.presencePolicy,
+      ).thenReturn(const DefaultUserPresencePolicy());
 
       cubit = UsersPresenceCubit(chatClient);
     });
@@ -29,18 +30,12 @@ void main() {
       final userIds = {'a', 'b'};
       final presenceMap1 = {
         'a': UserPresence(fixedNow),
-        'b': UserPresence(
-          fixedNow.subtract(const Duration(minutes: 5)),
-        ),
+        'b': UserPresence(fixedNow.subtract(const Duration(minutes: 5))),
       };
 
       final presenceMap2 = {
-        'a': UserPresence(
-          fixedNow.subtract(const Duration(minutes: 1)),
-        ),
-        'b': UserPresence(
-          fixedNow.subtract(const Duration(minutes: 6)),
-        ),
+        'a': UserPresence(fixedNow.subtract(const Duration(minutes: 1))),
+        'b': UserPresence(fixedNow.subtract(const Duration(minutes: 6))),
       };
 
       blocTest<UsersPresenceCubit, UsersPresenceState>(
@@ -52,10 +47,8 @@ void main() {
 
           return cubit;
         },
-        act: (bloc) => withClock(
-          fixedClock,
-          () => bloc.subscribeToUsersPresence(userIds),
-        ),
+        act: (bloc) =>
+            withClock(fixedClock, () => bloc.subscribeToUsersPresence(userIds)),
         expect: () => [
           UsersPresenceState(
             lastSeen: presenceMap1,

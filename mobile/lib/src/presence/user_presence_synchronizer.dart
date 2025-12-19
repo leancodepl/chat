@@ -15,10 +15,10 @@ class UserPresenceSynchronizer with WidgetsBindingObserver {
   }
 
   final WidgetsBinding _widgetsBinding;
-  final ChatClient _chatClient;
+  final ChatClient<dynamic, dynamic> _chatClient;
 
   Timer? _timer;
-  bool _isStarted = false;
+  var _isStarted = false;
   final _logger = Logger('UserPresenceSynchronizer');
 
   Future<void> start() async {
@@ -55,23 +55,18 @@ class UserPresenceSynchronizer with WidgetsBindingObserver {
   void _onTick(Timer timer) => _updatePresence();
 
   void _startTimer() {
-    _timer = Timer.periodic(
-      _chatClient.presencePolicy.pingInterval,
-      _onTick,
-    );
+    _timer = Timer.periodic(_chatClient.presencePolicy.pingInterval, _onTick);
   }
 
   void _stopTimer() => _timer?.cancel();
 
-  Future<void> _updatePresence() {
+  Future<void> _updatePresence() async {
     _logger.info('Presence ping');
 
-    return _chatClient.updatePresence()
-      ..catchError(
-        // ignore: avoid_types_on_closure_parameters
-        (dynamic e, StackTrace st) {
-          _logger.warning('Failed to update presence', e, st);
-        },
-      );
+    try {
+      await _chatClient.updatePresence();
+    } catch (e, st) {
+      _logger.warning('Failed to update presence', e, st);
+    }
   }
 }

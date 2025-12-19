@@ -81,7 +81,7 @@ class ChatClient<TMemberData, TConversationData> {
     return _cqrs.run(
       c.CreateConversation(
         conversationId: conversationId,
-        members: [...members, if (currentUserId != null) currentUserId!],
+        members: [...members, ?currentUserId],
         metadata: metadata,
       ),
     );

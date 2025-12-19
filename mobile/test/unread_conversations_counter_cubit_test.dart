@@ -8,7 +8,7 @@ import 'mocks.dart';
 void main() {
   group('UnreadConversationsCounterCubit', () {
     late UnreadConversationsCounterCubit cubit;
-    late ChatClient chatClient;
+    late ChatClient<dynamic, dynamic> chatClient;
 
     setUp(() {
       chatClient = MockChatClient();
@@ -24,8 +24,9 @@ void main() {
     blocTest<UnreadConversationsCounterCubit, int>(
       'updates counter',
       build: () {
-        when(() => chatClient.subscribeToUnreadConversationsCounter())
-            .thenAnswer((_) => Stream.fromIterable([2, 3]));
+        when(
+          () => chatClient.subscribeToUnreadConversationsCounter(),
+        ).thenAnswer((_) => Stream.fromIterable([2, 3]));
 
         return cubit;
       },
