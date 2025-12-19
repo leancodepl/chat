@@ -10,9 +10,9 @@ part 'users_presence_cubit.freezed.dart';
 class UsersPresenceCubit extends Cubit<UsersPresenceState> {
   UsersPresenceCubit(this._chatClient) : super(const UsersPresenceState());
 
-  final ChatClient _chatClient;
+  final ChatClient<dynamic, dynamic> _chatClient;
   final Set<String> _subscribedUsers = {};
-  final List<StreamSubscription> _subscriptions = [];
+  final List<StreamSubscription<Map<String, UserPresence>>> _subscriptions = [];
 
   Timer? _timer;
   final _logger = Logger('UsersPresenceCubit');
@@ -55,18 +55,11 @@ class UsersPresenceCubit extends Cubit<UsersPresenceState> {
   }
 
   void _onTick(Timer timer) {
-    emit(
-      state.copyWith(
-        statuses: _refreshStatuses(state.lastSeen),
-      ),
-    );
+    emit(state.copyWith(statuses: _refreshStatuses(state.lastSeen)));
   }
 
   void _updateState(Map<String, UserPresence> newLastSeen) {
-    final allLastSeen = {
-      ...state.lastSeen,
-      ...newLastSeen,
-    };
+    final allLastSeen = {...state.lastSeen, ...newLastSeen};
 
     emit(
       state.copyWith(
@@ -81,17 +74,17 @@ class UsersPresenceCubit extends Cubit<UsersPresenceState> {
   ) {
     return {
       for (final entry in lastSeen.entries)
-        entry.key: entry.value.getStatus(_chatClient.presencePolicy)
+        entry.key: entry.value.getStatus(_chatClient.presencePolicy),
     };
   }
 }
 
 @freezed
-class UsersPresenceState with _$UsersPresenceState {
+abstract class UsersPresenceState with _$UsersPresenceState {
   const factory UsersPresenceState({
     @Default(<String, UserPresence>{}) Map<String, UserPresence> lastSeen,
     @Default(<String, UserPresenceStatus>{})
-        Map<String, UserPresenceStatus> statuses,
+    Map<String, UserPresenceStatus> statuses,
   }) = _UsersPresenceState;
 
   const UsersPresenceState._();

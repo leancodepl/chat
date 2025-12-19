@@ -8,17 +8,14 @@ import 'user_presence_synchronizer.dart';
 ///
 /// User is considered to be present when the app is open in the foreground.
 void useUserPresence(
-  ChatClient client,
+  ChatClient<dynamic, dynamic> client,
   WidgetsBinding widgetsBinding, {
   List<Object?>? keys = const [],
 }) {
-  useEffect(
-    () {
-      final synchronizer = UserPresenceSynchronizer(widgetsBinding, client)
-        ..start();
+  useEffect(() {
+    final synchronizer = UserPresenceSynchronizer(widgetsBinding, client)
+      ..start();
 
-      return synchronizer.dispose;
-    },
-    keys,
-  );
+    return synchronizer.dispose;
+  }, keys);
 }

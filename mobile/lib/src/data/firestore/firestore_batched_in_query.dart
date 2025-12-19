@@ -12,6 +12,8 @@ class FirestoreBatchedInQuery<T> {
   // https://cloud.google.com/firestore/docs/query-data/queries#query_limitations
   static const maxBatchSize = 10;
 
+  // Type parameter in function parameter position is contravariant, which is expected for this builder pattern
+  // ignore: unsafe_variance
   final QueryBuilder<T> _queryBuilder;
 
   Stream<QuerySnapshot<Map<String, dynamic>>> run(List<T> params) {

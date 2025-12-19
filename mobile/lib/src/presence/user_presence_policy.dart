@@ -27,8 +27,8 @@ class DefaultUserPresencePolicy with UserPresencePolicy {
     this.statusRefreshInterval = defaultStatusRefreshInterval,
   });
 
-  static const Duration defaultInterval = Duration(minutes: 1);
-  static const Duration defaultStatusRefreshInterval = Duration(seconds: 30);
+  static const defaultInterval = Duration(minutes: 1);
+  static const defaultStatusRefreshInterval = Duration(seconds: 30);
 
   @override
   final Duration pingInterval;

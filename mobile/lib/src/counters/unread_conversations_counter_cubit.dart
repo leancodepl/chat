@@ -6,13 +6,14 @@ import 'package:leancode_chat_client/leancode_chat_client.dart';
 class UnreadConversationsCounterCubit extends Cubit<int> {
   UnreadConversationsCounterCubit(this._chatClient) : super(0);
 
-  final ChatClient _chatClient;
+  final ChatClient<dynamic, dynamic> _chatClient;
 
-  StreamSubscription? _subscription;
+  StreamSubscription<int>? _subscription;
 
   void start() {
-    _subscription =
-        _chatClient.subscribeToUnreadConversationsCounter().listen(emit);
+    _subscription = _chatClient.subscribeToUnreadConversationsCounter().listen(
+      emit,
+    );
   }
 
   Future<void> stop() async {

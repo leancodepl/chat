@@ -7,6 +7,6 @@ class UserPresence {
 
   UserPresenceStatus getStatus(UserPresencePolicy presencePolicy) =>
       presencePolicy.isOnline(lastSeen)
-          ? UserPresenceStatus.online
-          : UserPresenceStatus.offline;
+      ? UserPresenceStatus.online
+      : UserPresenceStatus.offline;
 }

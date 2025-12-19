@@ -17,24 +17,26 @@ class ChatClient<TMemberData, TConversationData> {
     ChatCustomDataProvider<TMemberData, TConversationData> customDataProvider, {
     this.presencePolicy = const DefaultUserPresencePolicy(),
   }) {
-    _firestoreRepository =
-        FirestoreRepository(FirebaseFirestore.instance, () => currentUserId);
-    _customDataRepository =
-        CustomDataRepository<TMemberData, TConversationData>(
-      customDataProvider,
+    _firestoreRepository = FirestoreRepository(
+      FirebaseFirestore.instance,
       () => currentUserId,
     );
+    _customDataRepository =
+        CustomDataRepository<TMemberData, TConversationData>(
+          customDataProvider,
+          () => currentUserId,
+        );
   }
 
-  static const int defaultPageSize = 25;
+  static const defaultPageSize = 25;
 
   final UserPresencePolicy presencePolicy;
-  final CQRS _cqrs;
+  final Cqrs _cqrs;
 
   final _logger = Logger('ChatClient');
 
   late CustomDataRepository<TMemberData, TConversationData>
-      _customDataRepository;
+  _customDataRepository;
   late FirestoreRepository _firestoreRepository;
 
   bool get isLoggedIn => FirebaseAuth.instance.currentUser != null;
@@ -42,7 +44,14 @@ class ChatClient<TMemberData, TConversationData> {
 
   Future<void> signIn() async {
     try {
-      final token = await _cqrs.get(const c.FirestoreToken());
+      final tokenResult = await _cqrs.get(c.FirestoreToken());
+      final String token;
+      switch (tokenResult) {
+        case QuerySuccess(:final data):
+          token = data;
+        case QueryFailure():
+          return;
+      }
 
       if (FirebaseAuth.instance.currentUser != null) {
         await signOut();
@@ -72,7 +81,7 @@ class ChatClient<TMemberData, TConversationData> {
     return _cqrs.run(
       c.CreateConversation(
         conversationId: conversationId,
-        members: [...members, currentUserId],
+        members: [...members, ?currentUserId],
         metadata: metadata,
       ),
     );
@@ -93,7 +102,7 @@ class ChatClient<TMemberData, TConversationData> {
   }
 
   Future<List<Conversation<TMemberData?, TConversationData>>>
-      fetchAllConversations() async {
+  fetchAllConversations() async {
     final snapshots = await _firestoreRepository.fetchAllConversations();
     final customData = await _customDataRepository.getCustomData(
       snapshots.map(ConversationRawData.fromQuerySnapshot).toList(),
@@ -114,25 +123,25 @@ class ChatClient<TMemberData, TConversationData> {
   }
 
   Future<Conversation<TMemberData?, TConversationData>?>
-      fetchConversationByMetadata({
+  fetchConversationByMetadata({
     required List<String> members,
     required String metadataProperty,
     required String metadataValue,
   }) async {
-    final conversationDocSnapshot =
-        await _firestoreRepository.fetchConversationByMetadata(
-      members: members,
-      metadataProperty: metadataProperty,
-      metadataValue: metadataValue,
-    );
+    final conversationDocSnapshot = await _firestoreRepository
+        .fetchConversationByMetadata(
+          members: members,
+          metadataProperty: metadataProperty,
+          metadataValue: metadataValue,
+        );
 
     if (conversationDocSnapshot == null) {
       return null;
     }
 
-    final customData = await _customDataRepository.getCustomData(
-      [ConversationRawData.fromQuerySnapshot(conversationDocSnapshot)],
-    );
+    final customData = await _customDataRepository.getCustomData([
+      ConversationRawData.fromQuerySnapshot(conversationDocSnapshot),
+    ]);
 
     return ConversationMapper.mapConversation(
       conversationDocSnapshot.id,
@@ -146,17 +155,16 @@ class ChatClient<TMemberData, TConversationData> {
   Future<Conversation<TMemberData?, TConversationData>?> fetchConversationById(
     String conversationId,
   ) async {
-    final conversationDocSnapshot =
-        await _firestoreRepository.fetchConversationById(conversationId);
+    final conversationDocSnapshot = await _firestoreRepository
+        .fetchConversationById(conversationId);
 
     if (!conversationDocSnapshot.exists) {
       return null;
     }
 
-    final customData = await _customDataRepository.getCustomData(
-      [ConversationRawData.fromDocumentSnapshot(conversationDocSnapshot)],
-      fromCache: false,
-    );
+    final customData = await _customDataRepository.getCustomData([
+      ConversationRawData.fromDocumentSnapshot(conversationDocSnapshot),
+    ], fromCache: false);
 
     return ConversationMapper.mapConversation(
       conversationDocSnapshot.id,
@@ -218,26 +226,26 @@ class ChatClient<TMemberData, TConversationData> {
   }
 
   Stream<List<Conversation<TMemberData?, TConversationData>>>
-      subscribeToConversationUpdates() {
-    return _firestoreRepository.subscribeToConversationUpdates().asyncMap(
-      (event) async {
-        final customData = await _customDataRepository.getCustomData(
-          event.docs.map(ConversationRawData.fromDocumentSnapshot).toList(),
-        );
+  subscribeToConversationUpdates() {
+    return _firestoreRepository.subscribeToConversationUpdates().asyncMap((
+      event,
+    ) async {
+      final customData = await _customDataRepository.getCustomData(
+        event.docs.map(ConversationRawData.fromDocumentSnapshot).toList(),
+      );
 
-        return event.docs
-            .map(
-              (doc) => ConversationMapper.mapConversation(
-                doc.id,
-                doc.data(),
-                customData.conversations[doc.id],
-                customData.members,
-                currentUserId,
-              ),
-            )
-            .toList();
-      },
-    );
+      return event.docs
+          .map(
+            (doc) => ConversationMapper.mapConversation(
+              doc.id,
+              doc.data(),
+              customData.conversations[doc.id],
+              customData.members,
+              currentUserId,
+            ),
+          )
+          .toList();
+    });
   }
 
   Future<CommandResult> markMessageAsSeen(String messageId) {
@@ -245,28 +253,30 @@ class ChatClient<TMemberData, TConversationData> {
   }
 
   Stream<int> subscribeToUnreadConversationsCounter() {
-    return _firestoreRepository.subscribeToUnreadConversationsCounter().map(
-      (doc) {
-        final data = doc.data();
-        if (data == null) {
-          return 0;
-        }
-        return data['Count'] as int;
-      },
-    );
+    return _firestoreRepository.subscribeToUnreadConversationsCounter().map((
+      doc,
+    ) {
+      final data = doc.data();
+      if (data == null) {
+        return 0;
+      }
+      return data['Count'] as int;
+    });
   }
 
   Future<CommandResult> updatePresence() {
-    return _cqrs.run(const c.UpdatePresence());
+    return _cqrs.run(c.UpdatePresence());
   }
 
   Stream<Map<String, UserPresence>> subscribeToUsersPresence(
     Set<String> userIds,
   ) {
-    return _firestoreRepository.subscribeToUsersPresence(userIds.toList()).map(
+    return _firestoreRepository
+        .subscribeToUsersPresence(userIds.toList())
+        .map(
           (event) => {
             for (final doc in event.docs)
-              doc.id: UserPresenceMapper.mapUserPresence(doc.data())
+              doc.id: UserPresenceMapper.mapUserPresence(doc.data()),
           },
         );
   }

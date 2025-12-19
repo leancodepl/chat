@@ -1,3 +1,4 @@
+// Dynamic calls are necessary here for Firestore data access
 // ignore_for_file: avoid_dynamic_calls
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,7 +8,7 @@ import 'message_mapper.dart';
 
 abstract class ConversationMapper {
   static Conversation<TMember, TConversationData>
-      mapConversation<TMember, TConversationData>(
+  mapConversation<TMember, TConversationData>(
     String id,
     Map<String, dynamic> data,
     TConversationData? customData,
@@ -30,9 +31,7 @@ abstract class ConversationMapper {
               currentUserId,
             )
           : null,
-      statuses: _mapMemberStatuses(
-        data['Members'] as Map<String, dynamic>,
-      ),
+      statuses: _mapMemberStatuses(data['Members'] as Map<String, dynamic>),
       lockedByUserIds:
           (data['LockedByUserIds'] as List<dynamic>? ?? <dynamic>[])
               .map((dynamic id) => id as String)
@@ -67,8 +66,8 @@ abstract class ConversationMapper {
       for (final entry in data.entries)
         entry.key: MemberStatus(
           lastSeenMessageId: entry.value['LastSeenMessageId'] as String,
-          lastSeenMessageDate:
-              (entry.value['LastSeenMessageDate'] as Timestamp).toDate(),
+          lastSeenMessageDate: (entry.value['LastSeenMessageDate'] as Timestamp)
+              .toDate(),
         ),
     };
   }

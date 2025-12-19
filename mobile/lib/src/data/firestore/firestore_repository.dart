@@ -11,7 +11,7 @@ class FirestoreRepository {
   final String? Function() _getCurrentUserId;
 
   Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>>
-      fetchAllConversations() async {
+  fetchAllConversations() async {
     final conversations = await _firestore
         .collection(FirestoreCollections.conversations)
         .where('MemberIds', arrayContains: _getCurrentUserId())
@@ -23,7 +23,7 @@ class FirestoreRepository {
 
   Future<DocumentSnapshot<Map<String, dynamic>>> fetchConversationById(
     String conversationId,
-  ) async {
+  ) {
     return _firestore
         .collection(FirestoreCollections.conversations)
         .doc(conversationId)
@@ -31,7 +31,7 @@ class FirestoreRepository {
   }
 
   Future<QueryDocumentSnapshot<Map<String, dynamic>>?>
-      fetchConversationByMetadata({
+  fetchConversationByMetadata({
     required List<String> members,
     required String metadataProperty,
     required String? metadataValue,
@@ -43,8 +43,10 @@ class FirestoreRepository {
     if (metadataValue == null) {
       query = query.where('Metadata.$metadataProperty', isNull: true);
     } else {
-      query =
-          query.where('Metadata.$metadataProperty', isEqualTo: metadataValue);
+      query = query.where(
+        'Metadata.$metadataProperty',
+        isEqualTo: metadataValue,
+      );
     }
 
     for (final member in members) {
@@ -103,7 +105,7 @@ class FirestoreRepository {
   }
 
   Stream<DocumentSnapshot<Map<String, dynamic>>>
-      subscribeToUnreadConversationsCounter() {
+  subscribeToUnreadConversationsCounter() {
     return _firestore
         .collection(FirestoreCollections.unreadConversationsCounters)
         .doc(_getCurrentUserId())

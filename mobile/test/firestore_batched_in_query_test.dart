@@ -40,11 +40,11 @@ abstract class _MockQueryBuilder<T> {
   Query<Map<String, dynamic>> call(List<T> ids);
 }
 
-// ignore: deprecated_subtype_of_function
 class _QueryCallbackMock extends Mock implements _MockQueryBuilder<int> {
   @override
   Query<Map<String, dynamic>> call(List<int> ids);
 }
 
+// Mocking sealed classes is necessary for testing
 // ignore: subtype_of_sealed_class
 class _MockQuery extends Mock implements Query<Map<String, dynamic>> {}

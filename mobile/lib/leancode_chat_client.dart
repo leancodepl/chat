@@ -1,5 +1,3 @@
-library leancode_chat_client;
-
 export 'src/chat_client.dart';
 export 'src/chat_custom_data_provider.dart';
 
