@@ -25,6 +25,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Restore tools
+        run: dotnet tool restore
+        working-directory: .
       - name: Restore
         run: dotnet restore
       - name: Build
