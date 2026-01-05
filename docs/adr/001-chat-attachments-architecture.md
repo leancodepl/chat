@@ -78,21 +78,11 @@ The LeanCode Chat library currently supports only text messages. Users need the 
 
 | Option | Pros | Cons |
 |--------|------|------|
-| Extend `SendMessage` contract | Single contract for all messages | Different validation logic, breaking change potential |
-| **New `SendMessageWithAttachments` contract** | Clean separation, independent validation | Two contracts to maintain |
+| **Extend `SendMessage` contract** | Single contract, text+attachments in one message | Validation logic change |
+| New `SendMessageWithAttachments` contract | Clean separation | Two contracts to maintain, no text+attachments combo |
 | Separate attachment command | Maximum flexibility | More complex flow, ordering issues |
 
-**Decision: New `SendMessageWithAttachments` contract** - allows independent validation and cleaner separation of concerns. Text + attachment handled as separate messages on client side.
-
-#### Authentication
-
-| Option | Pros | Cons |
-|--------|------|------|
-| Storage Account Key | Simple | Less secure, broad access |
-| Account SAS | Scoped permissions | Still uses account key |
-| **User Delegation SAS (Entra ID)** | Most secure, uses AAD identity, no stored keys | Requires Entra ID setup |
-
-**Decision: User Delegation SAS with Entra ID** - aligns with security best practices and existing patterns in consumer projects.
+**Decision: Extend `SendMessage` contract** - supports text-only, attachments-only, or text+attachments in a single message. Simpler API surface.
 
 ### Out of Scope for v1
 
@@ -116,9 +106,11 @@ sequenceDiagram
     participant Azure as Azure Blob Storage
 
     App->>Backend: GetAttachmentUploadUrl(convId, msgId)
-    Backend-->>App: { UploadUrl (SAS), BlobUri }
+    Backend->>Azure: Create blob with ToDelete tag
+    Backend-->>App: UploadUrl (SAS)
     App->>Azure: PUT blob directly
-    App->>Backend: SendMessageWithAttachments(convId, msgId, attachments)
+    App->>Backend: SendMessage(convId, msgId, content?, attachments?)
+    Backend->>Azure: Commit blob (remove ToDelete tag)
 ```
 
 #### Download Flow
@@ -129,8 +121,8 @@ sequenceDiagram
     participant Backend as Backend (.NET)
     participant Azure as Azure Blob Storage
 
-    App->>Backend: GetConversationAttachmentsSasToken(convId)
-    Backend-->>App: { SasToken, BaseUrl, ExpiresAt }
+    App->>Backend: ConversationAttachmentsToken(convId)
+    Backend-->>App: { SasToken, ExpiresAt }
     App->>Azure: GET blob (attachment.Uri + sasToken)
 ```
 
@@ -177,11 +169,12 @@ class Message<TChatMember> {
 }
 ```
 
-### New Contracts
+### Contract Changes
 
 ```csharp
 // Query: Get upload URL for a new attachment
-public class GetAttachmentUploadUrl : IQuery<AttachmentUploadUrlDTO>
+// Returns: Full URL for upload with SAS token
+public class AttachmentUploadUrl : IQuery<Uri>
 {
     public Guid ConversationId { get; set; }
     public Guid MessageId { get; set; }
@@ -189,31 +182,25 @@ public class GetAttachmentUploadUrl : IQuery<AttachmentUploadUrlDTO>
     public string MimeType { get; set; }
 }
 
-public class AttachmentUploadUrlDTO
-{
-    public string UploadUrl { get; set; }    // Full SAS URL for upload
-    public Uri BlobUri { get; set; }         // Full blob URL (without SAS) to use in SendMessageWithAttachments
-}
-
 // Query: Get SAS token for reading conversation attachments
-public class GetConversationAttachmentsSasToken : IQuery<ConversationAttachmentsSasTokenDTO>
+public class ConversationAttachmentsToken : IQuery<ConversationAttachmentsTokenDTO>
 {
     public Guid ConversationId { get; set; }
 }
 
-public class ConversationAttachmentsSasTokenDTO
+public class ConversationAttachmentsTokenDTO
 {
     public string SasToken { get; set; }     // Container SAS token (read-only)
-    public string BaseUrl { get; set; }      // e.g., "https://account.blob.core.windows.net/chat-{convId}"
-    public DateTime ExpiresAt { get; set; }  // Token expiration time
+    public DateTime ExpiresAt { get; set; }
 }
 
-// Command: Send message with attachments
-public class SendMessageWithAttachments : ICommand
+// Extended: SendMessage now supports optional attachments
+public class SendMessage : ICommand
 {
     public Guid MessageId { get; set; }
     public Guid ConversationId { get; set; }
-    public List<AttachmentDTO> Attachments { get; set; }
+    public string? Content { get; set; }                  // Optional (required if no attachments)
+    public List<AttachmentDTO>? Attachments { get; set; } // Optional (required if no content)
 }
 
 public class AttachmentDTO
@@ -255,7 +242,6 @@ Package consumers provide:
 
 - **Container proliferation**: Many containers created over time (mitigated: Azure handles this well)
 - **API calls for downloads**: Client must fetch SAS token before displaying attachments
-- **No offline support**: Attachments require network access (acceptable for v1)
 - **Trust client**: No server-side validation of file types (acceptable for v1)
 
 ### Neutral
