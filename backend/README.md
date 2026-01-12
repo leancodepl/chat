@@ -113,13 +113,13 @@ public class ChatUsers : IRemoteQuery<List<ChatUserDTO>>
 }
 ```
 
-The DTO model can differ between applications and has no direct coupling to the chat subdomain. It is a reponsibility of client library to merge those two sources of data together to display them on the UI.
+The DTO model can differ between applications and has no direct coupling to the chat subdomain. It is a responsibility of client library to merge those two sources of data together to display them on the UI.
 
 #### Conversation data
 
 It is also possible to annotate the whole conversation with some application-specific data. This allows e.g. having multiple conversations between the same users in different contexts (think e.g. orders in marketplaces). You can add any metadata to conversations via the `Metadata` field in the `CreateConversation` command. Typically, you would store there ids of some domain objects, but there are no restrictions on what can be held in conversation metadata. Remember to check the validity of metadata provided by the client in `ChatValidator`.
 
-Due to the way Firestore indexes work, **if you want to query by a specific nullable metadata property, it cannot be empty - it needs to be explicitely set to null**.
+Due to the way Firestore indexes work, **if you want to query by a specific nullable metadata property, it cannot be empty - it needs to be explicitly set to null**.
 
 To enable clients to query application-specific conversation data, you should expose a query similar to the one for users:
 
@@ -136,3 +136,87 @@ public class ChatAuctions : IRemoteQuery<List<ChatAuctionDTO>>
 LeanCode.Chat is set up to send push notifications to users assuming the project has FCM configured with the help of the `LeanCode.Chat.FCM` package. Push notifications can be localized on a per-user basis which means the core application project should implement `IChatPushNotificationsLocalizer`. The interface also provides flexibility of setting the title of the notification e.g. based on the conversation metadata.
 
 You can opt out from sending default notification by setting `SendNotificationOnNewMessage` property in `ChatConfiguration` to `false`.
+
+## Chat Attachments
+
+LeanCode.Chat supports image, video, and file attachments in messages using Azure Blob Storage with User Delegation Keys for secure access.
+
+### Setup Requirements
+
+#### 1. Azure Blob Storage Configuration
+
+You must register a `BlobServiceClient` configured with Entra ID (Managed Identity or Service Principal):
+
+```csharp
+services.AddAzureClients(cfg =>
+{
+    cfg.AddBlobServiceClient(SharedAppConfig.BlobStorage.ConnectionString(Configuration));
+});
+```
+
+#### 2. Chat Service Registration
+
+Pass `ChatAttachmentsConfiguration` to `AddLeanChat`:
+
+```csharp
+services.AddLeanChat(new ChatAttachmentsConfiguration
+{
+    ContainerPrefix = "chat",                              // Blob container prefix
+    DownloadSasTokenValidity = TimeSpan.FromHours(24),    // Download token validity
+    UploadSasTokenValidity = TimeSpan.FromMinutes(15)     // Upload token validity
+});
+```
+
+#### 3. Azure RBAC Permissions
+
+The Managed Identity or Service Principal must have the following role:
+
+- **Storage Blob Data Contributor** (for issuing User Delegation Keys)
+
+### How It Works
+
+1. **Upload Flow:**
+   - Client requests upload URL via `AttachmentUploadUrl` query
+   - Backend generates SAS URL with write permissions and tags blob with `ToDelete=1`
+   - Client uploads directly to Azure Blob Storage
+   - Client sends message with attachment URIs via `SendMessage` command
+   - Backend removes `ToDelete` tag to commit the attachment
+
+2. **Download Flow:**
+   - Client requests container SAS token via `ConversationAttachmentsToken` query
+   - Backend validates user access and generates container-level SAS token
+   - Client downloads attachments directly from Azure Blob Storage
+
+### Blob Cleanup Strategy
+
+Uncommitted blobs (tagged with `ToDelete=1`) should be cleaned up periodically.
+
+**Recommended:** Configure Azure Lifecycle Management policy:
+
+```json
+{
+  "rules": [{
+    "name": "DeleteUncommittedChatAttachments",
+    "enabled": true,
+    "type": "Lifecycle",
+    "definition": {
+      "filters": {
+        "blobTypes": ["blockBlob"],
+        "prefixMatch": ["chat-"],
+        "blobIndexMatch": [{"name": "ToDelete", "value": "1"}]
+      },
+      "actions": {
+        "baseBlob": {
+          "delete": {"daysAfterModificationGreaterThan": 1}
+        }
+      }
+    }
+  }]
+}
+```
+
+This policy automatically deletes uncommitted attachments after 24 hours.
+
+## CHANGELOG
+
+- **`Message.Content` starting from version 10.0.2709-preview.42 is now nullable**: Messages can have either `Content`, `Attachments`, or both
