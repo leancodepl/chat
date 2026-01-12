@@ -248,3 +248,7 @@ Package consumers provide:
 
 - **New dependency**: `Azure.Storage.Blobs` package required
 - **Configuration required**: Consumers must provide Azure Blob Storage setup
+
+## Breaking Changes
+
+:warning: We no longer assume that every message has a content. This needs to be stated in the changelog once feature is implemented.
