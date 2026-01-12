@@ -64,13 +64,13 @@ public class ChatAttachmentsBlobStorage
         return new Uri($"{blob.Uri}?{sasToken}");
     }
 
-    public async Task<(string SasToken, DateTime ExpiresAt)> GetDownloadTokenAsync(
+    public async Task<(string SasToken, DateTimeOffset ExpiresAt)> GetDownloadTokenAsync(
         Guid conversationId,
         CancellationToken cancellationToken
     )
     {
         var containerName = GetContainerName(conversationId);
-        var expiresAt = DateTime.UtcNow.Add(config.DownloadSasTokenValidity);
+        var expiresAt = DateTimeOffset.UtcNow.Add(config.DownloadSasTokenValidity);
 
         var sasBuilder = new BlobSasBuilder
         {
