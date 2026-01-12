@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <PackageReference Include="Azure.Storage.Blobs" />
     <PackageReference Include="LeanCode.Components" />
     <PackageReference Include="LeanCode.CQRS.Execution" />
     <PackageReference Include="LeanCode.CQRS.Security" />
