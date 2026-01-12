@@ -8,12 +8,6 @@ namespace LeanCode.Chat.Contracts;
 public class ConversationAttachmentsToken : IQuery<ConversationAttachmentsTokenDTO>
 {
     public Guid ConversationId { get; set; }
-
-    public static class ErrorCodes
-    {
-        public const int ConversationDoesNotExist = 1;
-        public const int UserNotInConversation = 2;
-    }
 }
 
 public class ConversationAttachmentsTokenDTO
