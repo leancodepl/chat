@@ -27,7 +27,7 @@ public partial class EventSerializationTests
             [TestMember1, TestMember2],
             new Dictionary<string, string> { ["key1"] = "value1" }
         );
-        var message = conversation2.WriteMessage(Guid.NewGuid(), TestMember1, "Test message content");
+        var message = conversation2.WriteMessage(Guid.NewGuid(), TestMember1, "Test message content", null);
         var messageSent = new MessageSent(message, conversation2);
 
         return [conversationCreated, messageSent];
