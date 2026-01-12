@@ -75,8 +75,8 @@ public class Conversation
         return conversation;
     }
 
-    public Message WriteMessage(Guid guid, Guid senderId, string content)
+    public Message WriteMessage(Guid guid, Guid senderId, string? content)
     {
-        return Message.Create(guid, Id, senderId, NextMessageCounter, content);
+        return Message.Create(guid, Id, senderId, NextMessageCounter, content, null);
     }
 }
