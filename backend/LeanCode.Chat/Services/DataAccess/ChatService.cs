@@ -6,18 +6,19 @@ using LeanCode.Chat.Services.DataAccess.Entities;
 using LeanCode.Chat.Services.DataAccess.Serializers;
 using LeanCode.Chat.Services.DataAccess.Services;
 using LeanCode.Firebase.Firestore;
+using LeanCode.Logging;
 
 namespace LeanCode.Chat.Services.DataAccess;
 
 public class ChatService
 {
-    private readonly Serilog.ILogger logger = Serilog.Log.ForContext<ChatService>();
-
+    private readonly ILogger<ChatService> logger;
     private readonly FirestoreDatabase db;
 
-    public ChatService(FirestoreDatabase db)
+    public ChatService(FirestoreDatabase db, ILogger<ChatService> logger)
     {
         this.db = db;
+        this.logger = logger;
     }
 
     public virtual async Task<Conversation?> GetConversationAsync(Guid conversationId)

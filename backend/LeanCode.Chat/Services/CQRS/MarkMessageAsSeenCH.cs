@@ -4,6 +4,7 @@ using LeanCode.Chat.Contracts;
 using LeanCode.Chat.Services.DataAccess;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Validation.Fluent;
+using LeanCode.Logging;
 using LeanCode.UserIdExtractors.Extractors;
 using Microsoft.AspNetCore.Http;
 using Errors = LeanCode.Chat.Contracts.MarkMessageAsSeen.ErrorCodes;
@@ -22,14 +23,19 @@ public class MarkMessageAsSeenCV : AbstractValidator<MarkMessageAsSeen>
 
 public class MarkMessageAsSeenCH : ICommandHandler<MarkMessageAsSeen>
 {
-    private readonly Serilog.ILogger logger = Serilog.Log.ForContext<MarkMessageAsSeenCH>();
+    private readonly ILogger<MarkMessageAsSeenCH> logger;
     private readonly ChatService storage;
     private readonly GuidUserIdExtractor userIdExtractor;
 
-    public MarkMessageAsSeenCH(ChatService storage, GuidUserIdExtractor userIdExtractor)
+    public MarkMessageAsSeenCH(
+        ChatService storage,
+        GuidUserIdExtractor userIdExtractor,
+        ILogger<MarkMessageAsSeenCH> logger
+    )
     {
         this.storage = storage;
         this.userIdExtractor = userIdExtractor;
+        this.logger = logger;
     }
 
     public async Task ExecuteAsync(HttpContext context, MarkMessageAsSeen command)

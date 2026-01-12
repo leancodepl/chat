@@ -10,6 +10,7 @@ using LeanCode.Chat.Services.DataAccess.Blobs;
 using LeanCode.Chat.Services.DataAccess.Entities;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Validation.Fluent;
+using LeanCode.Logging;
 using LeanCode.UserIdExtractors.Extractors;
 using Microsoft.AspNetCore.Http;
 using Errors = LeanCode.Chat.Contracts.SendMessage.ErrorCodes;
@@ -87,7 +88,7 @@ public class SendMessageCV : AbstractValidator<SendMessage>
 
 public class SendMessageCH : ICommandHandler<SendMessage>
 {
-    private readonly Serilog.ILogger logger = Serilog.Log.ForContext<SendMessageCH>();
+    private readonly ILogger<SendMessageCH> logger;
     private readonly ChatService storage;
     private readonly GuidUserIdExtractor userIdExtractor;
     private readonly ChatAttachmentsBlobStorage blobStorage;
@@ -95,12 +96,14 @@ public class SendMessageCH : ICommandHandler<SendMessage>
     public SendMessageCH(
         ChatService storage,
         GuidUserIdExtractor userIdExtractor,
-        ChatAttachmentsBlobStorage blobStorage
+        ChatAttachmentsBlobStorage blobStorage,
+        ILogger<SendMessageCH> logger
     )
     {
         this.storage = storage;
         this.userIdExtractor = userIdExtractor;
         this.blobStorage = blobStorage;
+        this.logger = logger;
     }
 
     public async Task ExecuteAsync(HttpContext context, SendMessage command)
