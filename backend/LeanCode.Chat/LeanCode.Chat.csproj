@@ -1,5 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <InternalsVisibleTo Include="LeanCode.Chat.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Azure.Storage.Blobs" />
     <PackageReference Include="LeanCode.Components" />
     <PackageReference Include="LeanCode.CQRS.Execution" />
