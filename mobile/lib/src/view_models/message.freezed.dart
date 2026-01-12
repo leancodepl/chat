@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Message<TChatMember> {
 
- String get id; String get content; DateTime get dateSent; TChatMember get sender; MessageUserType get userType;
+ String get id; String? get content; List<Attachment>? get attachments; DateTime get dateSent; TChatMember get sender; MessageUserType get userType;
 /// Create a copy of Message
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $MessageCopyWith<TChatMember, Message<TChatMember>> get copyWith => _$MessageCop
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Message<TChatMember>&&(identical(other.id, id) || other.id == id)&&(identical(other.content, content) || other.content == content)&&(identical(other.dateSent, dateSent) || other.dateSent == dateSent)&&const DeepCollectionEquality().equals(other.sender, sender)&&(identical(other.userType, userType) || other.userType == userType));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Message<TChatMember>&&(identical(other.id, id) || other.id == id)&&(identical(other.content, content) || other.content == content)&&const DeepCollectionEquality().equals(other.attachments, attachments)&&(identical(other.dateSent, dateSent) || other.dateSent == dateSent)&&const DeepCollectionEquality().equals(other.sender, sender)&&(identical(other.userType, userType) || other.userType == userType));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,content,dateSent,const DeepCollectionEquality().hash(sender),userType);
+int get hashCode => Object.hash(runtimeType,id,content,const DeepCollectionEquality().hash(attachments),dateSent,const DeepCollectionEquality().hash(sender),userType);
 
 @override
 String toString() {
-  return 'Message<$TChatMember>(id: $id, content: $content, dateSent: $dateSent, sender: $sender, userType: $userType)';
+  return 'Message<$TChatMember>(id: $id, content: $content, attachments: $attachments, dateSent: $dateSent, sender: $sender, userType: $userType)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $MessageCopyWith<TChatMember,$Res>  {
   factory $MessageCopyWith(Message<TChatMember> value, $Res Function(Message<TChatMember>) _then) = _$MessageCopyWithImpl;
 @useResult
 $Res call({
- String id, String content, DateTime dateSent, TChatMember sender, MessageUserType userType
+ String id, String? content, List<Attachment>? attachments, DateTime dateSent, TChatMember sender, MessageUserType userType
 });
 
 
@@ -62,11 +62,12 @@ class _$MessageCopyWithImpl<TChatMember,$Res>
 
 /// Create a copy of Message
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? content = null,Object? dateSent = null,Object? sender = freezed,Object? userType = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? content = freezed,Object? attachments = freezed,Object? dateSent = null,Object? sender = freezed,Object? userType = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
-as String,dateSent: null == dateSent ? _self.dateSent : dateSent // ignore: cast_nullable_to_non_nullable
+as String,content: freezed == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
+as String?,attachments: freezed == attachments ? _self.attachments : attachments // ignore: cast_nullable_to_non_nullable
+as List<Attachment>?,dateSent: null == dateSent ? _self.dateSent : dateSent // ignore: cast_nullable_to_non_nullable
 as DateTime,sender: freezed == sender ? _self.sender : sender // ignore: cast_nullable_to_non_nullable
 as TChatMember,userType: null == userType ? _self.userType : userType // ignore: cast_nullable_to_non_nullable
 as MessageUserType,
@@ -154,10 +155,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String content,  DateTime dateSent,  TChatMember sender,  MessageUserType userType)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String? content,  List<Attachment>? attachments,  DateTime dateSent,  TChatMember sender,  MessageUserType userType)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Message() when $default != null:
-return $default(_that.id,_that.content,_that.dateSent,_that.sender,_that.userType);case _:
+return $default(_that.id,_that.content,_that.attachments,_that.dateSent,_that.sender,_that.userType);case _:
   return orElse();
 
 }
@@ -175,10 +176,10 @@ return $default(_that.id,_that.content,_that.dateSent,_that.sender,_that.userTyp
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String content,  DateTime dateSent,  TChatMember sender,  MessageUserType userType)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String? content,  List<Attachment>? attachments,  DateTime dateSent,  TChatMember sender,  MessageUserType userType)  $default,) {final _that = this;
 switch (_that) {
 case _Message():
-return $default(_that.id,_that.content,_that.dateSent,_that.sender,_that.userType);case _:
+return $default(_that.id,_that.content,_that.attachments,_that.dateSent,_that.sender,_that.userType);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -195,10 +196,10 @@ return $default(_that.id,_that.content,_that.dateSent,_that.sender,_that.userTyp
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String content,  DateTime dateSent,  TChatMember sender,  MessageUserType userType)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String? content,  List<Attachment>? attachments,  DateTime dateSent,  TChatMember sender,  MessageUserType userType)?  $default,) {final _that = this;
 switch (_that) {
 case _Message() when $default != null:
-return $default(_that.id,_that.content,_that.dateSent,_that.sender,_that.userType);case _:
+return $default(_that.id,_that.content,_that.attachments,_that.dateSent,_that.sender,_that.userType);case _:
   return null;
 
 }
@@ -210,11 +211,20 @@ return $default(_that.id,_that.content,_that.dateSent,_that.sender,_that.userTyp
 
 
 class _Message<TChatMember> implements Message<TChatMember> {
-  const _Message({required this.id, required this.content, required this.dateSent, required this.sender, required this.userType});
+  const _Message({required this.id, this.content, final  List<Attachment>? attachments, required this.dateSent, required this.sender, required this.userType}): _attachments = attachments;
   
 
 @override final  String id;
-@override final  String content;
+@override final  String? content;
+ final  List<Attachment>? _attachments;
+@override List<Attachment>? get attachments {
+  final value = _attachments;
+  if (value == null) return null;
+  if (_attachments is EqualUnmodifiableListView) return _attachments;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
+}
+
 @override final  DateTime dateSent;
 @override final  TChatMember sender;
 @override final  MessageUserType userType;
@@ -229,16 +239,16 @@ _$MessageCopyWith<TChatMember, _Message<TChatMember>> get copyWith => __$Message
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Message<TChatMember>&&(identical(other.id, id) || other.id == id)&&(identical(other.content, content) || other.content == content)&&(identical(other.dateSent, dateSent) || other.dateSent == dateSent)&&const DeepCollectionEquality().equals(other.sender, sender)&&(identical(other.userType, userType) || other.userType == userType));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Message<TChatMember>&&(identical(other.id, id) || other.id == id)&&(identical(other.content, content) || other.content == content)&&const DeepCollectionEquality().equals(other._attachments, _attachments)&&(identical(other.dateSent, dateSent) || other.dateSent == dateSent)&&const DeepCollectionEquality().equals(other.sender, sender)&&(identical(other.userType, userType) || other.userType == userType));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,content,dateSent,const DeepCollectionEquality().hash(sender),userType);
+int get hashCode => Object.hash(runtimeType,id,content,const DeepCollectionEquality().hash(_attachments),dateSent,const DeepCollectionEquality().hash(sender),userType);
 
 @override
 String toString() {
-  return 'Message<$TChatMember>(id: $id, content: $content, dateSent: $dateSent, sender: $sender, userType: $userType)';
+  return 'Message<$TChatMember>(id: $id, content: $content, attachments: $attachments, dateSent: $dateSent, sender: $sender, userType: $userType)';
 }
 
 
@@ -249,7 +259,7 @@ abstract mixin class _$MessageCopyWith<TChatMember,$Res> implements $MessageCopy
   factory _$MessageCopyWith(_Message<TChatMember> value, $Res Function(_Message<TChatMember>) _then) = __$MessageCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String content, DateTime dateSent, TChatMember sender, MessageUserType userType
+ String id, String? content, List<Attachment>? attachments, DateTime dateSent, TChatMember sender, MessageUserType userType
 });
 
 
@@ -266,11 +276,12 @@ class __$MessageCopyWithImpl<TChatMember,$Res>
 
 /// Create a copy of Message
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? content = null,Object? dateSent = null,Object? sender = freezed,Object? userType = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? content = freezed,Object? attachments = freezed,Object? dateSent = null,Object? sender = freezed,Object? userType = null,}) {
   return _then(_Message<TChatMember>(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
-as String,dateSent: null == dateSent ? _self.dateSent : dateSent // ignore: cast_nullable_to_non_nullable
+as String,content: freezed == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
+as String?,attachments: freezed == attachments ? _self._attachments : attachments // ignore: cast_nullable_to_non_nullable
+as List<Attachment>?,dateSent: null == dateSent ? _self.dateSent : dateSent // ignore: cast_nullable_to_non_nullable
 as DateTime,sender: freezed == sender ? _self.sender : sender // ignore: cast_nullable_to_non_nullable
 as TChatMember,userType: null == userType ? _self.userType : userType // ignore: cast_nullable_to_non_nullable
 as MessageUserType,
