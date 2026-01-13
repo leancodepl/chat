@@ -103,13 +103,13 @@ class ChatClient<TMemberData, TConversationData> {
     );
   }
 
-  Future<Uri?> getAttachmentUploadUrl({
+  Future<QueryResult<Uri>> getAttachmentUploadUrl({
     required String conversationId,
     required String messageId,
     required String fileName,
     required String mimeType,
-  }) async {
-    final result = await _cqrs.get(
+  }) {
+    return _cqrs.get(
       c.AttachmentUploadUrl(
         conversationId: conversationId,
         messageId: messageId,
@@ -117,24 +117,13 @@ class ChatClient<TMemberData, TConversationData> {
         mimeType: mimeType,
       ),
     );
-
-    return switch (result) {
-      QuerySuccess(:final data) => data,
-      QueryFailure() => null,
-    };
   }
 
-  Future<c.ConversationAttachmentsTokenDTO?> getConversationAttachmentsToken({
-    required String conversationId,
-  }) async {
-    final result = await _cqrs.get(
+  Future<QueryResult<c.ConversationAttachmentsTokenDTO>>
+  getConversationAttachmentsToken({required String conversationId}) {
+    return _cqrs.get(
       c.ConversationAttachmentsToken(conversationId: conversationId),
     );
-
-    return switch (result) {
-      QuerySuccess(:final data) => data,
-      QueryFailure() => null,
-    };
   }
 
   Future<List<Conversation<TMemberData?, TConversationData>>>
