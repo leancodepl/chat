@@ -9,6 +9,6 @@ public class AttachmentUploadUrl : IQuery<Uri>
 {
     public Guid ConversationId { get; set; }
     public Guid MessageId { get; set; }
-    public string FileName { get; set; } = null!;
-    public string MimeType { get; set; } = null!;
+    public string FileName { get; set; }
+    public string MimeType { get; set; }
 }

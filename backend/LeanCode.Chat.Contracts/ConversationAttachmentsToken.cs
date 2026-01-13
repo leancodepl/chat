@@ -12,6 +12,6 @@ public class ConversationAttachmentsToken : IQuery<ConversationAttachmentsTokenD
 
 public class ConversationAttachmentsTokenDTO
 {
-    public string SasToken { get; set; } = null!;
+    public string SasToken { get; set; }
     public DateTimeOffset ExpiresAt { get; set; }
 }
