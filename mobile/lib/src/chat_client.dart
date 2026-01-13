@@ -90,14 +90,39 @@ class ChatClient<TMemberData, TConversationData> {
   Future<CommandResult> sendMessage({
     required String messageId,
     required String conversationId,
-    required String content,
+    String? content,
+    List<c.AttachmentDTO>? attachments,
   }) {
     return _cqrs.run(
       c.SendMessage(
         messageId: messageId,
         conversationId: conversationId,
         content: content,
+        attachments: attachments,
       ),
+    );
+  }
+
+  Future<QueryResult<Uri>> getAttachmentUploadUrl({
+    required String conversationId,
+    required String messageId,
+    required String fileName,
+    required String mimeType,
+  }) {
+    return _cqrs.get(
+      c.AttachmentUploadUrl(
+        conversationId: conversationId,
+        messageId: messageId,
+        fileName: fileName,
+        mimeType: mimeType,
+      ),
+    );
+  }
+
+  Future<QueryResult<c.ConversationAttachmentsTokenDTO>>
+  getConversationAttachmentsToken({required String conversationId}) {
+    return _cqrs.get(
+      c.ConversationAttachmentsToken(conversationId: conversationId),
     );
   }
 

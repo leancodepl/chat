@@ -1,12 +1,16 @@
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
 using LeanCode.Chat.Contracts;
 using LeanCode.Chat.Services.CQRS.Validation;
 using LeanCode.Chat.Services.DataAccess;
+using LeanCode.Chat.Services.DataAccess.Blobs;
+using LeanCode.Chat.Services.DataAccess.Entities;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Validation.Fluent;
+using LeanCode.Logging;
 using LeanCode.UserIdExtractors.Extractors;
 using Microsoft.AspNetCore.Http;
 using Errors = LeanCode.Chat.Contracts.SendMessage.ErrorCodes;
@@ -23,15 +27,38 @@ public class SendMessageCV : AbstractValidator<SendMessage>
 
         RuleFor(cmd => cmd.ConversationId).CustomAsync(ValidateConversationAsync);
 
-        RuleFor(cmd => cmd.Content).NotEmpty().WithCode(Errors.NoContent).WithMessage("No content");
+        RuleFor(cmd => cmd)
+            .Must(cmd => !string.IsNullOrWhiteSpace(cmd.Content) || (cmd.Attachments?.Count ?? 0) > 0)
+            .WithCode(Errors.OneOfContentOrAttachmentsRequired)
+            .WithMessage("Message must have either content or attachments");
+
+        RuleFor(cmd => cmd).Custom(ValidateAttachments);
 
         RuleFor(cmd => cmd)
-            .MustAsync(ValidateCommandAsync)
+            .MustAsync(CanSendMessageAsync)
             .WithCode(Errors.CannotSendMessage)
             .WithMessage("Cannot send message");
     }
 
-    private static Task<bool> ValidateCommandAsync(
+    private static void ValidateAttachments(SendMessage cmd, ValidationContext<SendMessage> ctx)
+    {
+        if (cmd.Attachments is not null && cmd.Attachments.Count > 0)
+        {
+            var blobStorage = ctx.GetService<ChatAttachmentsBlobStorage>();
+
+            if (!cmd.Attachments.All(a => a.Uri is not null && a.FileName is not null && a.MimeType is not null))
+            {
+                ctx.AddValidationError("Attachments list contains null elements", Errors.InvalidAttachment);
+            }
+
+            if (!cmd.Attachments.All(a => blobStorage.IsValidBlobUri(cmd.ConversationId, a.Uri)))
+            {
+                ctx.AddValidationError("Attachment URI does not belong to this conversation", Errors.InvalidAttachment);
+            }
+        }
+    }
+
+    private static Task<bool> CanSendMessageAsync(
         SendMessage cmd,
         SendMessage _,
         IValidationContext ctx,
@@ -66,29 +93,46 @@ public class SendMessageCV : AbstractValidator<SendMessage>
 
 public class SendMessageCH : ICommandHandler<SendMessage>
 {
-    private readonly Serilog.ILogger logger = Serilog.Log.ForContext<SendMessageCH>();
+    private readonly ILogger<SendMessageCH> logger;
     private readonly ChatService storage;
     private readonly GuidUserIdExtractor userIdExtractor;
+    private readonly ChatAttachmentsBlobStorage blobStorage;
 
-    public SendMessageCH(ChatService storage, GuidUserIdExtractor userIdExtractor)
+    public SendMessageCH(
+        ChatService storage,
+        GuidUserIdExtractor userIdExtractor,
+        ChatAttachmentsBlobStorage blobStorage,
+        ILogger<SendMessageCH> logger
+    )
     {
         this.storage = storage;
         this.userIdExtractor = userIdExtractor;
+        this.blobStorage = blobStorage;
+        this.logger = logger;
     }
 
     public async Task ExecuteAsync(HttpContext context, SendMessage command)
     {
         var userId = userIdExtractor.Extract(context.User);
 
+        var attachments = command.Attachments?.Select(a => new Attachment(a.Uri, a.MimeType, a.FileName)).ToList();
+
         var data = await storage.AddMessageAsync(
             command.ConversationId,
-            conv => conv.WriteMessage(command.MessageId, userId, command.Content),
+            conv => conv.WriteMessage(command.MessageId, userId, command.Content, attachments),
             conv => conv.InConversation(userId)
         );
 
-        if (data is not null)
+        if (data is (Conversation conv, Message msg))
         {
-            var (conv, msg) = data.Value;
+            if (msg.Attachments is not null)
+            {
+                foreach (var attachment in msg.Attachments)
+                {
+                    await blobStorage.CommitBlobAsync(attachment.Uri, context.RequestAborted);
+                }
+            }
+
             msg.NotifySent(conv);
 
             logger.Information("User {UserId} sent message to conversation {ConversationId}", userId, conv.Id);

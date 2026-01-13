@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:leancode_chat_client/src/view_models/attachment.dart';
 
 part 'message.freezed.dart';
 
@@ -8,7 +9,8 @@ enum MessageUserType { sender, receiver }
 abstract class Message<TChatMember> with _$Message<TChatMember> {
   const factory Message({
     required String id,
-    required String content,
+    String? content,
+    List<Attachment>? attachments,
     required DateTime dateSent,
     required TChatMember sender,
     required MessageUserType userType,

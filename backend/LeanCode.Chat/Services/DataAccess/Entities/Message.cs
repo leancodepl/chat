@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using LeanCode.Chat.Services.DataAccess.Events;
 using LeanCode.DomainModels.Model;
 using LeanCode.TimeProvider;
@@ -14,7 +15,8 @@ public class Message
     public Guid SenderId { get; private set; }
     public DateTime DateSent { get; private set; }
     public long MessageCounter { get; private set; }
-    public string Content { get; private set; } = null!;
+    public string? Content { get; private set; }
+    public List<Attachment>? Attachments { get; private set; }
 
     private Message() { }
 
@@ -25,7 +27,8 @@ public class Message
         Guid senderId,
         DateTime dateSent,
         long messageCounter,
-        string content
+        string? content,
+        List<Attachment>? attachments
     )
     {
         Id = id;
@@ -34,11 +37,19 @@ public class Message
         DateSent = dateSent;
         MessageCounter = messageCounter;
         Content = content;
+        Attachments = attachments;
     }
 
-    internal static Message Create(Guid guid, Guid conversationId, Guid senderId, long nextCounter, string content)
+    internal static Message Create(
+        Guid guid,
+        Guid conversationId,
+        Guid senderId,
+        long nextCounter,
+        string? content,
+        List<Attachment>? attachments
+    )
     {
-        return new(guid, conversationId, senderId, Time.UtcNow, nextCounter, content);
+        return new(guid, conversationId, senderId, Time.UtcNow, nextCounter, content, attachments);
     }
 
     public void NotifySent(Conversation conversation)

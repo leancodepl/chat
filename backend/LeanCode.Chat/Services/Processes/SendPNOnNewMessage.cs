@@ -8,13 +8,14 @@ using LeanCode.Chat.Services.DataAccess.Events;
 using LeanCode.Chat.Services.DataAccess.Notifications;
 using LeanCode.Chat.Services.DataAccess.Services;
 using LeanCode.Firebase.FCM;
+using LeanCode.Logging;
 using MassTransit;
 
 namespace LeanCode.Chat.Services.Processes;
 
 public class SendPNOnNewMessage : IConsumer<MessageSent>
 {
-    private readonly Serilog.ILogger logger = Serilog.Log.ForContext<SendPNOnNewMessage>();
+    private readonly ILogger<SendPNOnNewMessage> logger;
     private readonly ChatConfiguration configuration;
     private readonly FCMClient<Guid> fcm;
     private readonly IPushNotificationTokenStore<Guid> pushNotificationTokenStore;
@@ -24,13 +25,15 @@ public class SendPNOnNewMessage : IConsumer<MessageSent>
         ChatConfiguration configuration,
         FCMClient<Guid> fcm,
         IPushNotificationTokenStore<Guid> pushNotificationTokenStore,
-        IChatPushNotificationsLocalizer pushNotificationsLocalizer
+        IChatPushNotificationsLocalizer pushNotificationsLocalizer,
+        ILogger<SendPNOnNewMessage> logger
     )
     {
         this.configuration = configuration;
         this.fcm = fcm;
         this.pushNotificationTokenStore = pushNotificationTokenStore;
         this.pushNotificationsLocalizer = pushNotificationsLocalizer;
+        this.logger = logger;
     }
 
     public async Task Consume(ConsumeContext<MessageSent> context)

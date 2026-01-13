@@ -4,6 +4,60 @@ import 'package:leancode_contracts/leancode_contracts.dart';
 part 'contracts.g.dart';
 
 @ContractsSerializable()
+class AttachmentDTO with EquatableMixin {
+  AttachmentDTO({
+    required this.uri,
+    required this.mimeType,
+    required this.fileName,
+  });
+
+  factory AttachmentDTO.fromJson(Map<String, dynamic> json) =>
+      _$AttachmentDTOFromJson(json);
+
+  final Uri uri;
+
+  final String mimeType;
+
+  final String fileName;
+
+  static const fullName$ = 'LeanCode.Chat.Contracts.AttachmentDTO';
+
+  List<Object?> get props => [uri, mimeType, fileName];
+
+  Map<String, dynamic> toJson() => _$AttachmentDTOToJson(this);
+}
+
+/// LeanCode.Contracts.Security.AuthorizeWhenHasAnyOfAttribute('chat_user')
+@ContractsSerializable()
+class AttachmentUploadUrl with EquatableMixin implements Query<Uri> {
+  AttachmentUploadUrl({
+    required this.conversationId,
+    required this.messageId,
+    required this.fileName,
+    required this.mimeType,
+  });
+
+  factory AttachmentUploadUrl.fromJson(Map<String, dynamic> json) =>
+      _$AttachmentUploadUrlFromJson(json);
+
+  final String conversationId;
+
+  final String messageId;
+
+  final String fileName;
+
+  final String mimeType;
+
+  List<Object?> get props => [conversationId, messageId, fileName, mimeType];
+
+  Map<String, dynamic> toJson() => _$AttachmentUploadUrlToJson(this);
+
+  Uri resultFactory(dynamic decodedJson) => Uri.parse(decodedJson as String);
+
+  String getFullName() => 'LeanCode.Chat.Contracts.AttachmentUploadUrl';
+}
+
+@ContractsSerializable()
 class ChatRoles with EquatableMixin {
   ChatRoles();
 
@@ -17,6 +71,54 @@ class ChatRoles with EquatableMixin {
   List<Object?> get props => [];
 
   Map<String, dynamic> toJson() => _$ChatRolesToJson(this);
+}
+
+/// LeanCode.Contracts.Security.AuthorizeWhenHasAnyOfAttribute('chat_user')
+@ContractsSerializable()
+class ConversationAttachmentsToken
+    with EquatableMixin
+    implements Query<ConversationAttachmentsTokenDTO> {
+  ConversationAttachmentsToken({required this.conversationId});
+
+  factory ConversationAttachmentsToken.fromJson(Map<String, dynamic> json) =>
+      _$ConversationAttachmentsTokenFromJson(json);
+
+  final String conversationId;
+
+  List<Object?> get props => [conversationId];
+
+  Map<String, dynamic> toJson() => _$ConversationAttachmentsTokenToJson(this);
+
+  ConversationAttachmentsTokenDTO resultFactory(dynamic decodedJson) =>
+      _$ConversationAttachmentsTokenDTOFromJson(
+        decodedJson as Map<String, dynamic>,
+      );
+
+  String getFullName() =>
+      'LeanCode.Chat.Contracts.ConversationAttachmentsToken';
+}
+
+@ContractsSerializable()
+class ConversationAttachmentsTokenDTO with EquatableMixin {
+  ConversationAttachmentsTokenDTO({
+    required this.sasToken,
+    required this.expiresAt,
+  });
+
+  factory ConversationAttachmentsTokenDTO.fromJson(Map<String, dynamic> json) =>
+      _$ConversationAttachmentsTokenDTOFromJson(json);
+
+  final String sasToken;
+
+  final DateTimeOffset expiresAt;
+
+  static const fullName$ =
+      'LeanCode.Chat.Contracts.ConversationAttachmentsTokenDTO';
+
+  List<Object?> get props => [sasToken, expiresAt];
+
+  Map<String, dynamic> toJson() =>
+      _$ConversationAttachmentsTokenDTOToJson(this);
 }
 
 /// LeanCode.Contracts.Security.AuthorizeWhenHasAnyOfAttribute('chat_user')
@@ -164,6 +266,7 @@ class SendMessage with EquatableMixin implements Command {
     required this.messageId,
     required this.conversationId,
     required this.content,
+    required this.attachments,
   });
 
   factory SendMessage.fromJson(Map<String, dynamic> json) =>
@@ -173,9 +276,11 @@ class SendMessage with EquatableMixin implements Command {
 
   final String conversationId;
 
-  final String content;
+  final String? content;
 
-  List<Object?> get props => [messageId, conversationId, content];
+  final List<AttachmentDTO>? attachments;
+
+  List<Object?> get props => [messageId, conversationId, content, attachments];
 
   Map<String, dynamic> toJson() => _$SendMessageToJson(this);
 
@@ -192,6 +297,10 @@ class SendMessageErrorCodes {
   static const noMessageId = 4;
 
   static const cannotSendMessage = 5;
+
+  static const oneOfContentOrAttachmentsRequired = 6;
+
+  static const invalidAttachment = 7;
 }
 
 /// LeanCode.Contracts.Security.AuthorizeWhenHasAnyOfAttribute('chat_user')

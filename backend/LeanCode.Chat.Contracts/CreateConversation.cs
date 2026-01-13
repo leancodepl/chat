@@ -9,7 +9,7 @@ namespace LeanCode.Chat.Contracts;
 public class CreateConversation : ICommand
 {
     public Guid ConversationId { get; set; }
-    public HashSet<Guid> Members { get; set; } = null!;
+    public HashSet<Guid> Members { get; set; }
     public Dictionary<string, string>? Metadata { get; set; }
 
     public static class ErrorCodes

@@ -7,6 +7,7 @@ using LeanCode.Chat.Services.DataAccess;
 using LeanCode.Chat.Services.DataAccess.Entities;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Validation.Fluent;
+using LeanCode.Logging;
 using LeanCode.UserIdExtractors.Extractors;
 using Microsoft.AspNetCore.Http;
 using Errors = LeanCode.Chat.Contracts.CreateConversation.ErrorCodes;
@@ -43,12 +44,13 @@ public class CreateConversationCV : AbstractValidator<CreateConversation>
 
 public class CreateConversationCH : ICommandHandler<CreateConversation>
 {
-    private readonly Serilog.ILogger logger = Serilog.Log.ForContext<CreateConversationCH>();
+    private readonly ILogger<CreateConversationCH> logger;
     private readonly ChatService storage;
 
-    public CreateConversationCH(ChatService storage)
+    public CreateConversationCH(ChatService storage, ILogger<CreateConversationCH> logger)
     {
         this.storage = storage;
+        this.logger = logger;
     }
 
     public async Task ExecuteAsync(HttpContext context, CreateConversation command)

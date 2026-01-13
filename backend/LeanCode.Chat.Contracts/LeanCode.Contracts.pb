@@ -1,9 +1,37 @@
 
-LeanCode.Chat.ContractsB
+LeanCode.Chat.Contracts\
+%LeanCode.Chat.Contracts.AttachmentDTOR3
+1
+"Uri
+"MimeType
+"FileName‰
++LeanCode.Chat.Contracts.AttachmentUploadUrlO
+:LeanCode.Contracts.Security.AuthorizeWhenHasAnyOfAttribute
+"
+	chat_userbd
+\
+"	Ë"
+"ConversationId
+"	MessageId
+"FileName
+"MimeType"B
 !LeanCode.Chat.Contracts.ChatRolesR
 "
 ChatUser"
-	chat_userã
+	chat_user•
+4LeanCode.Chat.Contracts.ConversationAttachmentsTokenO
+:LeanCode.Contracts.Security.AuthorizeWhenHasAnyOfAttribute
+"
+	chat_userbõ
+\
+B"@Ë;9
+7LeanCode.Chat.Contracts.ConversationAttachmentsTokenDTO
+"ConversationId;9
+7LeanCode.Chat.Contracts.ConversationAttachmentsTokenDTOc
+7LeanCode.Chat.Contracts.ConversationAttachmentsTokenDTOR(
+&
+"SasToken
+" 	ExpiresAtã
 *LeanCode.Chat.Contracts.CreateConversationO
 :LeanCode.Contracts.Security.AuthorizeWhenHasAnyOfAttribute
 "
@@ -53,16 +81,18 @@ A?
 A?
 =LeanCode.Chat.Contracts.Notifications.ChatNotificationTypeDTOChatNotificationType
 "ConversationId
-"	MessageId∏
+"	MessageId¿
 #LeanCode.Chat.Contracts.SendMessageO
 :LeanCode.Contracts.Security.AuthorizeWhenHasAnyOfAttribute
 "
-	chat_userjø
-C
+	chat_userj«
+à
 "È
 "	MessageId
-"ConversationId
-"Content
+"ConversationId
+"ContentA
+2".¨)'
+%LeanCode.Chat.Contracts.AttachmentDTOAttachments
 
 ConversationDoesNotExist
 
@@ -72,7 +102,11 @@ C
 
 NoMessageId
 
-CannotSendMessageÑ
+CannotSendMessage'
+%
+!OneOfContentOrAttachmentsRequired
+
+InvalidAttachmentÑ
 &LeanCode.Chat.Contracts.UpdatePresenceO
 :LeanCode.Contracts.Security.AuthorizeWhenHasAnyOfAttribute
 "

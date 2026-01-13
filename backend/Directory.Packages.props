@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageVersion Include="Azure.Storage.Blobs" Version="12.27.0" />
     <PackageVersion Include="LeanCode.Components" Version="$(CoreLibVersion)" />
     <PackageVersion Include="LeanCode.Contracts" Version="2.0.0" />
     <PackageVersion Include="LeanCode.CQRS.Execution" Version="$(CoreLibVersion)" />
@@ -17,7 +18,7 @@
     <PackageVersion Include="LeanCode.Firebase.Firestore" Version="$(CoreLibVersion)" />
     <PackageVersion Include="LeanCode.UserIdExtractors" Version="$(CoreLibVersion)" />
     <PackageVersion Include="LeanCode.TimeProvider" Version="$(CoreLibVersion)" />
-    
+
     <!-- Test packages -->
     <PackageVersion Include="FluentAssertions" Version="7.0.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
