@@ -159,12 +159,16 @@ services.AddAzureClients(cfg =>
 Pass `ChatAttachmentsConfiguration` to `AddLeanChat`:
 
 ```csharp
-services.AddLeanChat(new ChatAttachmentsConfiguration
-{
-    ContainerPrefix = "chat",                              // Blob container prefix
-    DownloadSasTokenValidity = TimeSpan.FromHours(24),    // Download token validity
-    UploadSasTokenValidity = TimeSpan.FromMinutes(15)     // Upload token validity
-});
+services.AddLeanChat(
+    new ChatConfiguration(SendNotificationOnNewMessage: true),
+    new GuidUserIdExtractor(Auth.KnownClaims.UserId),
+    new ChatAttachmentsConfiguration
+    {
+        ContainerPrefix = "chat",                             // Blob container prefix
+        DownloadSasTokenValidity = TimeSpan.FromHours(24),    // Download token validity
+        UploadSasTokenValidity = TimeSpan.FromMinutes(15)     // Upload token validity
+    }
+);
 ```
 
 #### 3. Azure RBAC Permissions
@@ -220,3 +224,4 @@ This policy automatically deletes uncommitted attachments after 24 hours.
 ## CHANGELOG
 
 - **`Message.Content` starting from version 10.0.2709-preview.42 is now nullable**: Messages can have either `Content`, `Attachments`, or both
+- **`AddLeanChat` method starting from version 10.0.2709-preview.43 now requires** `ChatConfiguration`, `GuidUserIdExtractor`, and `ChatAttachmentsConfiguration` parameters
