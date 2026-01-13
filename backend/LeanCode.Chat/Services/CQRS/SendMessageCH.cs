@@ -46,6 +46,11 @@ public class SendMessageCV : AbstractValidator<SendMessage>
         {
             var blobStorage = ctx.GetService<ChatAttachmentsBlobStorage>();
 
+            if (!cmd.Attachments.All(a => a.Uri is not null && a.FileName is not null && a.MimeType is not null))
+            {
+                ctx.AddValidationError("Attachments list contains null elements", Errors.InvalidAttachment);
+            }
+
             if (!cmd.Attachments.All(a => blobStorage.IsValidBlobUri(cmd.ConversationId, a.Uri)))
             {
                 ctx.AddValidationError("Attachment URI does not belong to this conversation", Errors.InvalidAttachment);
