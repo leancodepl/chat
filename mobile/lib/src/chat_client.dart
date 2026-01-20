@@ -91,14 +91,22 @@ class ChatClient<TMemberData, TConversationData> {
     required String messageId,
     required String conversationId,
     String? content,
-    List<c.AttachmentDTO>? attachments,
+    required List<Attachment> attachments,
   }) {
     return _cqrs.run(
       c.SendMessage(
         messageId: messageId,
         conversationId: conversationId,
         content: content,
-        attachments: attachments,
+        attachments: attachments
+            .map(
+              (a) => c.AttachmentDTO(
+                uri: a.uri,
+                mimeType: a.mimeType,
+                fileName: a.fileName,
+              ),
+            )
+            .toList(),
       ),
     );
   }

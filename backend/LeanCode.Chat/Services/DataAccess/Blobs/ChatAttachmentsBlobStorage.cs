@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Sas;
-using LeanCode.Logging;
 
 namespace LeanCode.Chat.Services.DataAccess.Blobs;
 
@@ -18,19 +17,16 @@ public class ChatAttachmentsBlobStorage
     private readonly BlobServiceClient client;
     private readonly BlobStorageDelegationKeyProvider keyProvider;
     private readonly ChatAttachmentsConfiguration config;
-    private readonly ILogger<ChatAttachmentsBlobStorage> logger;
 
     public ChatAttachmentsBlobStorage(
         BlobServiceClient client,
         BlobStorageDelegationKeyProvider keyProvider,
-        ChatAttachmentsConfiguration config,
-        ILogger<ChatAttachmentsBlobStorage> logger
+        ChatAttachmentsConfiguration config
     )
     {
         this.client = client;
         this.keyProvider = keyProvider;
         this.config = config;
-        this.logger = logger;
     }
 
     public async Task<Uri> GetUploadUrlAsync(
@@ -62,25 +58,17 @@ public class ChatAttachmentsBlobStorage
         };
         sasBuilder.SetPermissions(BlobSasPermissions.Write);
 
-        try
+        if (client.CanGenerateAccountSasUri)
         {
-            var key = await keyProvider.GetKeyAsync(cancellationToken);
-            var sasToken = sasBuilder.ToSasQueryParameters(key, client.AccountName);
-
-            return new Uri($"{blob.Uri}?{sasToken}");
+            return blob.GenerateSasUri(sasBuilder);
         }
-        catch (Exception ex)
+        else
         {
-            logger.Error(ex, "Error getting upload URL");
-
-            // Fallback to account key
-
-            if (client.CanGenerateAccountSasUri)
+            var userDelegationKey = await keyProvider.GetKeyAsync(cancellationToken);
+            return new BlobUriBuilder(blob.Uri)
             {
-                return blob.GenerateSasUri(sasBuilder);
-            }
-
-            throw;
+                Sas = sasBuilder.ToSasQueryParameters(userDelegationKey, client.AccountName),
+            }.ToUri();
         }
     }
 
@@ -100,24 +88,17 @@ public class ChatAttachmentsBlobStorage
         };
         sasBuilder.SetPermissions(BlobContainerSasPermissions.Read | BlobContainerSasPermissions.List);
 
-        try
+        if (client.CanGenerateAccountSasUri)
         {
-            var key = await keyProvider.GetKeyAsync(cancellationToken);
-            var sasToken = sasBuilder.ToSasQueryParameters(key, client.AccountName).ToString();
-
-            return (sasToken, expiresAt);
+            var container = client.GetBlobContainerClient(containerName);
+            var sasUri = container.GenerateSasUri(sasBuilder);
+            return (sasUri.Query.TrimStart('?'), expiresAt);
         }
-        catch (Exception ex)
+        else
         {
-            logger.Error(ex, "Error getting download token");
-            // Fallback to account key
-            if (client.CanGenerateAccountSasUri)
-            {
-                var container = client.GetBlobContainerClient(containerName);
-                return (container.GenerateSasUri(sasBuilder).ToString(), expiresAt);
-            }
-
-            throw;
+            var userDelegationKey = await keyProvider.GetKeyAsync(cancellationToken);
+            var sasToken = sasBuilder.ToSasQueryParameters(userDelegationKey, client.AccountName).ToString();
+            return (sasToken, expiresAt);
         }
     }
 
