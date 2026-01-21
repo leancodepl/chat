@@ -104,7 +104,8 @@ public class ChatAttachmentsBlobStorage
 
     public async Task CommitBlobAsync(Uri blobUri, CancellationToken cancellationToken)
     {
-        var blob = new BlobClient(blobUri);
+        var blobBuilder = new BlobUriBuilder(blobUri);
+        var blob = client.GetBlobContainerClient(blobBuilder.BlobContainerName).GetBlobClient(blobBuilder.BlobName);
         await blob.SetTagsAsync(new Dictionary<string, string>(), cancellationToken: cancellationToken);
     }
 
