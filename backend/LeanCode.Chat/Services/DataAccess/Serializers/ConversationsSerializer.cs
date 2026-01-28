@@ -59,6 +59,14 @@ internal static class ConversationsSerializer
                 ConversationId = message.ConversationId.ToString(),
                 message.DateSent,
                 message.Content,
+                Attachments = message
+                    .Attachments?.Select(a => new
+                    {
+                        Uri = a.Uri.ToString(),
+                        a.MimeType,
+                        a.FileName,
+                    })
+                    .ToList(),
 
                 // For queries
                 Exists = true,
